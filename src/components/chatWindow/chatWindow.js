@@ -1,6 +1,7 @@
 import React from 'react';
 import Message from '../message/message';
 import './chatWindow.css';
+import theAudio from '../../audios/newAudio.mp4';
 
 
 function chatWindow(props) {
@@ -18,7 +19,7 @@ function chatWindow(props) {
             <Message me={false} body={hisMessage}/>
             <Message me={false} body='Sure man...'/> 
             <Message me={true} body={myMessage}/>
-            <Message me={false} body={hisMessage}/>
+            <Message me={false} audio={theAudio}/>
             <Message me={false} body='Sure man...'/>           
         </div>
     );

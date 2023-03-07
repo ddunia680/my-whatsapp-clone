@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {  useRef} from 'react';
+import WaveForm from '../../UI/waveForm/waveForm';
 
-function message(props) {
+function Message(props) {
+    const containerRef = useRef();
+    console.log(containerRef.current);
 
     const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-lg";
 
@@ -8,10 +11,13 @@ function message(props) {
 
     return (
         <div className={!props.me ? interlocutorMessageClasses : myMessageClasses}>
-                {props.body}
+                { props.body ?
+                props.body : 
+                <WaveForm audio={props.audio}/>
+                }
                 <div className='absolute bottom-1 right-5 text-xs text-iconsColor'>12:30am</div>
         </div>
     );
 }
 
-export default message;
+export default Message;

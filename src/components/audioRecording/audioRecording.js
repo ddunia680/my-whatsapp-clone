@@ -11,7 +11,7 @@ function AudioRecording(props) {
     const [recording, setRecording] = useState(false);
     const [timeRecorded, setTimeRecorded] = useState(0);
     const [theAudio, setTheAudio] = useState(null);
-    console.log(theAudio);
+    // console.log(theAudio);
 
     useEffect(() => {
         if(recordingUI) {
@@ -34,12 +34,22 @@ function AudioRecording(props) {
         setTheAudio(recordingBlob);
     }
 
+    useEffect(() => {
+        if(recording) {
+          setInterval(()=> {
+            setTimeRecorded(timeRecorded + 1);
+        }, 1000);
+        } else {
+          setTimeRecorded(timeRecorded);
+        }
+      }, [recording, timeRecorded]);
+
 
     return (
         <div className='absolute md:relative bottom-0 left-0 w-[100%] h-[4rem] bg-primary flex justify-end items-center px-2 md:px-5 space-x-[1rem] md:space-x-[2rem] py-[0.7rem] text-mainTextColor'>
             <div className='w-[25rem] h-[100%] flex justify-center items-center space-x-2 '>
                 <TrashIcon className='w-[1.5rem]' onClick={() => dispatch(SETAUDIOUIVISIBILITY(false))} title="cancel recording"/>
-                <h5 >0:00</h5>
+                <h5 >{ timeRecorded / 60 > 1 ? timeRecorded / 60 : '0'}:{timeRecorded < 10 ? '0' : null}{timeRecorded}</h5>
                 <ReactMic
                     className='h-[100%] w-[50%]'
                     backgroundColor='transparent'

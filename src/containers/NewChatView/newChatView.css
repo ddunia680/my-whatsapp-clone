@@ -1,0 +1,43 @@
+  .newChat::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track  == the rest of the bar*/
+  .newChat::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  /* Handle -- the scrolling piece */
+  .newChat::-webkit-scrollbar-thumb {
+    background: #222e35;
+  }
+  
+  /* Handle on hover */
+  .newChat::-webkit-scrollbar-thumb:hover {
+    background: #2c3a43;
+  }
+
+  .NewVVisible {
+    animation: newViewVisible 0.3s ease-in-out forwards;
+
+  }
+  .NewVInvisible {
+    animation: newViewInvisible 0.3s ease-in-out forwards;
+  }
+
+  @keyframes newViewVisible {
+    0%{
+      transform: translateX(-100%);
+    }
+    100%{
+      transform: translateX(0%);
+    }
+  }
+  @keyframes newViewInvisible {
+    0%{
+      transform: translateX(0%);
+    }
+    100%{
+      transform: translateX(-100%);
+    }
+  }

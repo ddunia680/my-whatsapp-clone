@@ -1,0 +1,27 @@
+.circle {
+    background-color: transparent;
+    border-radius: 50%;
+    width: fit-content;
+    padding: 2px;
+    border: 2px dashed lightgray;
+    position: relative;
+
+}
+
+.inside {
+    background-color: transparent;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    border: 2px dashed lightgray;
+}
+
+.new {
+    background-color: aqua;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    left: 12px;
+    top: 0px
+}

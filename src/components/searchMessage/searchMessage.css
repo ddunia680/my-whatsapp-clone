@@ -1,0 +1,43 @@
+.theList::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track  == the rest of the bar*/
+  .theList::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  /* Handle -- the scrolling piece */
+  .theList::-webkit-scrollbar-thumb {
+    background: #222e35;
+  }
+  
+  /* Handle on hover */
+  .theList::-webkit-scrollbar-thumb:hover {
+    background: #2c3a43;
+  }
+
+  .searchMVisible {
+    animation: searchVisible 0.3s ease-in-out forwards;
+
+  }
+  .searchMInvisible {
+    animation: searchInvisible 0.1s ease-in-out forwards;
+  }
+
+  @keyframes searchVisible {
+    0%{
+      transform: translateX(100%);
+    }
+    100%{
+      transform: translateX(0%);
+    }
+  }
+  @keyframes searchInvisible {
+    0%{
+      transform: translateX(0%);
+    }
+    100%{
+      transform: translateX(100%);
+    }
+  }

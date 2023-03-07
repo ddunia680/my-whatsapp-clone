@@ -6,6 +6,7 @@ const uiStates = createSlice({
         onAudioCall: false,
         onVideoCall: false,
         newChatUI: false,
+        recordingUI: false
     },
     reducers: {
         SETAUDIOCALL: (state, action) => {
@@ -16,9 +17,17 @@ const uiStates = createSlice({
         },
         SETNEWCHATUIVISIBILITY: (state, action) => {
             state.newChatUI = action.payload;
+        },
+        SETAUDIOUIVISIBILITY: (state, action) => {
+            state.recordingUI = action.payload;
         }
     }
 });
 
-export const { SETAUDIOCALL, SETVIDEOCALL, SETNEWCHATUIVISIBILITY } = uiStates.actions;
+export const { 
+    SETAUDIOCALL, 
+    SETVIDEOCALL, 
+    SETNEWCHATUIVISIBILITY, 
+    SETAUDIOUIVISIBILITY 
+} = uiStates.actions;
 export default uiStates.reducer;

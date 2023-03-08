@@ -1,0 +1,7 @@
+.notValid {
+    border-color: rgb(114, 30, 30);
+}
+
+.IsValid {
+    border-color:rgb(16, 95, 16);
+}

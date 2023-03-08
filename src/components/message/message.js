@@ -1,9 +1,6 @@
-import React, {  useRef} from 'react';
 import WaveForm from '../../UI/waveForm/waveForm';
 
 function Message(props) {
-    const containerRef = useRef();
-    console.log(containerRef.current);
 
     const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-lg";
 

@@ -6,7 +6,9 @@ const uiStates = createSlice({
         onAudioCall: false,
         onVideoCall: false,
         newChatUI: false,
-        recordingUI: false
+        recordingUI: false,
+        welcomeView: true,
+        signInUI: true
     },
     reducers: {
         SETAUDIOCALL: (state, action) => {
@@ -20,6 +22,12 @@ const uiStates = createSlice({
         },
         SETAUDIOUIVISIBILITY: (state, action) => {
             state.recordingUI = action.payload;
+        },
+        SETSHOWWELCOMEVIEW: (state, action) => {
+            state.welcomeView = action.payload;
+        },
+        SHOWSIGNINVIEW: (state, action) => {
+            state.signInUI = action.payload;
         }
     }
 });
@@ -28,6 +36,8 @@ export const {
     SETAUDIOCALL, 
     SETVIDEOCALL, 
     SETNEWCHATUIVISIBILITY, 
-    SETAUDIOUIVISIBILITY 
+    SETAUDIOUIVISIBILITY, 
+    SETSHOWWELCOMEVIEW,
+    SHOWSIGNINVIEW
 } = uiStates.actions;
 export default uiStates.reducer;

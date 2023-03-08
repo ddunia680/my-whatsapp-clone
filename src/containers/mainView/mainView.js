@@ -4,6 +4,8 @@ import RightView from '../rightView/rightView';
 import NewChatView from '../NewChatView/newChatView';
 import SearchMessage from '../../components/searchMessage/searchMessage';
 import AudioCallUI from '../../components/audioCall/audioCallUI';
+import WelcomeRightVIew from '../welcomeRightView/welcomeRightVIew';
+import AuthContainer from '../AuthContainer/authContainer';
 
 import { Transition } from 'react-transition-group';
 import { useSelector } from 'react-redux';
@@ -14,10 +16,11 @@ function MainView(props) {
     const [showSearchMessagesView, setShowSearchMView] = useState(false);
     const onAudioCall = useSelector(state => state.uiStates.onAudioCall);
     const onVideoCall = useSelector(state => state.uiStates.onVideoCall);
-    // console.log(onAudioCall);
+    const welcomeView = useSelector(state => state.uiStates.welcomeView);
     return (
         <div className='fixed md:flex md:justify-start md:items-start w-[100vw] h-[100vh] bg-darkSpecial 2xl:p-3'>
-            <LeftMenu/>
+            {/* <LeftMenu/> */}
+            <AuthContainer/>
             <Transition
             in={newChatUI}
             timeout={300}
@@ -26,7 +29,12 @@ function MainView(props) {
             >
                 <NewChatView/>
             </Transition>
-            <RightView setShowSearch={ans => setShowSearchMView(ans)}/>
+
+            {welcomeView ? 
+                <WelcomeRightVIew/> : 
+                <RightView setShowSearch={ans => setShowSearchMView(ans)}/>
+            }
+
             <Transition
             in={showSearchMessagesView}
             timeout={300}

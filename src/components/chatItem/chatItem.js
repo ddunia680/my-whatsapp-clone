@@ -1,16 +1,24 @@
 import { UserCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { SETSHOWWELCOMEVIEW } from '../../store/uiStates';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
 
 function ChatItem(props) {
+    const dispatch = useDispatch();
+    const welcomeView = useSelector(state => state.uiStates.welcomeView);
 
     const openChat = () => {
         if(window.innerWidth <= 500) {
             navigate('/chatWindow');
         } else {
-            console.log("You're in full screen");
+            if(welcomeView) {
+                dispatch(SETSHOWWELCOMEVIEW(false));
+            } else {
+                console.log('Data for chat should be fetched');
+            } 
         }
         
     }

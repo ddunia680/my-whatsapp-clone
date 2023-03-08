@@ -1,0 +1,26 @@
+.welcomeWrapper {
+    box-shadow: 1px 1px 20px 20px #222e35;
+}
+
+
+.line {
+
+}
+.line:first-child{
+    animation: anim 10s infinite;
+}
+
+@keyframes anim {
+    25% {
+        margin-top: 0;
+    }
+    50% {
+        margin-top: -2rem;
+    }
+    75% {
+        margin-top: -4rem;
+    }
+    100% {
+        margin-top: -6rem;
+    }
+}

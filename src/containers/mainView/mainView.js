@@ -13,14 +13,16 @@ import VideoCallUI from '../../components/videoCallUI/videoCallUI';
 
 function MainView(props) {
     const newChatUI = useSelector(state => state.uiStates.newChatUI);
+    const authenticated = useSelector(state => state.uiStates.authenticated);
+
     const [showSearchMessagesView, setShowSearchMView] = useState(false);
     const onAudioCall = useSelector(state => state.uiStates.onAudioCall);
     const onVideoCall = useSelector(state => state.uiStates.onVideoCall);
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
     return (
         <div className='fixed md:flex md:justify-start md:items-start w-[100vw] h-[100vh] bg-darkSpecial 2xl:p-3'>
-            {/* <LeftMenu/> */}
-            <AuthContainer/>
+            { authenticated ? <LeftMenu/> :
+            <AuthContainer/>}
             <Transition
             in={newChatUI}
             timeout={300}

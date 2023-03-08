@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useDispatch } from 'react-redux';
+import { SETAUTHENTICATED } from '../../store/uiStates';
 
 function SignIn(props) {
+    const dispatch = useDispatch();
+
     const [emailTouched, setEmailTouched] = useState(false);
     const [passwordTouched, setPasswordTouched] = useState(false);
 
@@ -30,7 +34,6 @@ function SignIn(props) {
     }, [emailTouched, emailIsValid, passwordTouched, passwordIsValid]);
 
     const valideFormHandler = (type, value) => {
-        console.log('is running');
         switch(type) {            
             case "email":
                 setEmailTouched(true);
@@ -89,7 +92,7 @@ function SignIn(props) {
             </div>
 
             <div>
-                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid}>SIGNIN</button>
+                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid} onClick={() => dispatch(SETAUTHENTICATED(true))}>SIGNIN</button>
             </div>
         </div>
     );

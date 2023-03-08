@@ -3,9 +3,14 @@ import { UserCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import './signUp.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { SHOWSIGNINVIEW } from '../../store/uiStates';
 
 function SignUp(props) {
     const profileInput = useRef();
+    const dispatch = useDispatch();
+    const signInUI = useSelector(state => state.uiStates.signInUI);
+
     const [usernameTouched, setUsernameTouched] = useState(false);
     const [emailTouched, setEmailTouched] = useState(false);
     const [passwordTouched, setPasswordTouched] = useState(false);
@@ -47,7 +52,6 @@ function SignUp(props) {
     }, [usernameIsValid, usernameTouched, emailTouched, emailIsValid, passwordTouched, passwordIsValid, confPassTouched, confPassIsValid]);
 
     const valideFormHandler = (type, value) => {
-        console.log('is running');
         switch(type) {
             case "username":
                 setUsernameTouched(true);
@@ -166,7 +170,7 @@ function SignUp(props) {
             </div>
 
             <div>
-                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid}>SIGN UP</button>
+                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid} onClick={() => dispatch(SHOWSIGNINVIEW(!signInUI))}>SIGN UP</button>
             </div>
         </div>
     );

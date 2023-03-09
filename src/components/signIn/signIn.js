@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
-import { SETAUTHENTICATED } from '../../store/uiStates';
+import Spinner from '../../UI/spinner/spinner';
+import axios from 'axios';
+import { LOGIN, moreSigninInfo } from '../../store/authenticate';
 
 function SignIn(props) {
     const dispatch = useDispatch();
@@ -13,9 +15,13 @@ function SignIn(props) {
     const [passwordIsValid, setPasswordValidity] = useState(false);
 
     const [formIsValid, setFormValidity] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [emailError, setEmailError] = useState('');
+    const [passswordError, setPasswordError] = useState('');
 
     
     const emailInputClasses = ['bg-gray-900 bg-opacity-[0.5] flex justify-between items-center h-[2.5rem] md:h-[3rem] border-green-700 border-b-[2px]', emailTouched && !emailIsValid ? 'notValid' : null];
@@ -56,6 +62,48 @@ function SignIn(props) {
         }
     }
 
+    const signInHandler = () => {
+        setLoading(false);
+        const data = new FormData();
+        data.append('email', email);
+        data.append('password', password);
+
+        axios.post('http://localhost:8080/auth/login', data)
+        .then(res => {
+            setLoading(false);
+            // console.log(res.data);
+            localStorage.setItem('token', res.data.token);
+            localStorage.setItem('userId', res.data.userId);
+            const remainingMilliseconds = 60 * 60 * 1000;
+            const expiryDate = new Date(
+                new Date().getTime() + remainingMilliseconds
+            );
+            localStorage.setItem('expiryDate', expiryDate.toISOString());
+
+            const info = {
+                method: 'GET',
+                url: `http://localhost:8080/auth/moreLoginInfo/${res.data.userId}`
+            }
+            dispatch(LOGIN({token: res.data.token, userId: res.data.userId}));
+            dispatch(moreSigninInfo(info));
+        })
+        .catch(err => {
+            setLoading(false);
+            console.log(err);
+            const errMessage = err.response.data.message;
+            if(errMessage === 'invalid email address') {
+                setEmailValidity(false);
+                setEmailError(errMessage);
+            } else if(errMessage === 'Email address not found') {
+                setEmailValidity(false);
+                setEmailError(errMessage);
+            } else if(errMessage === 'wrong password') {
+                setPasswordValidity(false);
+                setPasswordError(errMessage);
+            }
+        })
+    }
+
     return (
         <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%]'>
             <h1 className='text-xl text-green-700 font-semibold font-mono'>SIGN IN</h1>
@@ -73,6 +121,7 @@ function SignIn(props) {
                         valideFormHandler('email', '');
                 }}/> : null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{emailError}</p>
             </div>
 
             {/* password */}
@@ -89,10 +138,11 @@ function SignIn(props) {
                         valideFormHandler('password', null);
                         }}/> : null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{passswordError}</p>
             </div>
 
             <div>
-                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid} onClick={() => dispatch(SETAUTHENTICATED(true))}>SIGNIN</button>
+                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid || loading} onClick={signInHandler}>{!loading ? 'SIGNIN' : <Spinner/>}</button>
             </div>
         </div>
     );

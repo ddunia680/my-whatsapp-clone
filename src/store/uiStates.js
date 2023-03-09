@@ -8,8 +8,7 @@ const uiStates = createSlice({
         newChatUI: false,
         recordingUI: false,
         welcomeView: true,
-        signInUI: true,
-        authenticated: false
+        signInUI: true
     },
     reducers: {
         SETAUDIOCALL: (state, action) => {
@@ -29,9 +28,6 @@ const uiStates = createSlice({
         },
         SHOWSIGNINVIEW: (state, action) => {
             state.signInUI = action.payload;
-        },
-        SETAUTHENTICATED: (state, action) => {
-            state.authenticated = action.payload;
         }
     }
 });
@@ -42,7 +38,6 @@ export const {
     SETNEWCHATUIVISIBILITY, 
     SETAUDIOUIVISIBILITY, 
     SETSHOWWELCOMEVIEW,
-    SHOWSIGNINVIEW,
-    SETAUTHENTICATED
+    SHOWSIGNINVIEW
 } = uiStates.actions;
 export default uiStates.reducer;

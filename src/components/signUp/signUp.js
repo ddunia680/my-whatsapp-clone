@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import { UserCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import Spinner from '../../UI/spinner/spinner';
 
 import './signUp.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,13 +24,20 @@ function SignUp(props) {
     const [confPassIsValid, setCOnfPassValidity] = useState(false);
 
     const [formIsValid, setFormValidity] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [profile, setProfile] = useState(null);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
-    // console.log(username.length);
+
+    const [usernameError, setUsernameError] = useState('');
+    const [emaiError, setEmailError] = useState('');
+    const [passswordError, setPasswordError] = useState('');
+    const [confirmPassError, setConfirmPassError] = useState('');
+    const [mainError, setMainError] = useState('');
+    
 
     const usernameInputClasses = ['bg-gray-900 bg-opacity-[0.5] flex justify-between items-center h-[2.5rem] md:h-[3rem] border-green-700 border-b-[2px]', usernameTouched && !usernameIsValid ? 'notValid' : null];
 
@@ -91,6 +100,50 @@ function SignUp(props) {
         }
     }
 
+    const signUpHandler = () => {
+        setLoading(true);
+        let data;
+        if(profile) {
+            data = new FormData();
+            data.append('image', profile);
+            data.append('username', username);
+            data.append('email', email);
+            data.append('password', password);
+            data.append('confirmPass', confirmPass);
+        } else {
+            data = new FormData();
+            data.append('username', username);
+            data.append('email', email);
+            data.append('password', password);
+            data.append('confirmPass', confirmPass);
+        }
+
+        axios.put('http://localhost:8080/auth/signup', data)
+        .then(res => {
+            setLoading(false);
+            // console.log(res);
+            dispatch(SHOWSIGNINVIEW(!signInUI));
+        })
+        .catch(err => {
+            setLoading(false);
+            const errMessage = err.response.data.message;
+            if(errMessage === 'wrong username') {
+                setUsernameError(errMessage);
+            } else if(errMessage === 'invalid email address') {
+                setEmailError(errMessage);
+            } else if(errMessage === 'wrong password') {
+                setPasswordError(errMessage);
+            } else if(errMessage === 'wrong confirm password') {
+                setConfirmPassError(errMessage);
+            } else if(errMessage === "passwords don't match!") {
+                setPasswordError(errMessage);
+                setConfirmPassError(errMessage);
+            } else if(errMessage === "Oops..., Something went wrong server side") {
+                setMainError(errMessage);
+            }
+        });
+    }
+
     return (
         <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%]'>
             <h1 className='text-xl text-green-700 font-semibold font-mono'>SIGN UP</h1>
@@ -119,6 +172,7 @@ function SignUp(props) {
                         valideFormHandler('username', '');
                 }} title="clear"/>: null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{usernameError}</p>
             </div>
 
             {/* email address */}
@@ -135,7 +189,9 @@ function SignUp(props) {
                         valideFormHandler('email', '');
                 }}/> : null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{emaiError}</p>
             </div>
+            { mainError ? <p>{mainError} <Spinner/></p>: null}
 
             {/* password */}
             <div className='w-[80%]'>
@@ -151,6 +207,7 @@ function SignUp(props) {
                         valideFormHandler('password', null);
                         }}/> : null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{passswordError}</p>
             </div>
 
             {/* confirm password */}
@@ -167,10 +224,11 @@ function SignUp(props) {
                         valideFormHandler('confirmPass', null);
                         }}/> : null}
                 </div>
+                <p className='h-[1rem] text-xs text-red-600'>{confirmPassError}</p>
             </div>
 
             <div>
-                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid} onClick={() => dispatch(SHOWSIGNINVIEW(!signInUI))}>SIGN UP</button>
+                <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid || loading} onClick={signUpHandler}>{!loading ? 'SIGN UP' : <Spinner/>}</button>
             </div>
         </div>
     );

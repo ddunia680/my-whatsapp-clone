@@ -82,7 +82,6 @@ function ProfileChange(props) {
             data.append('status', newStatus) : 
             console.log("status didn't change");
         
-            console.log(data);
         axios.put('http://localhost:8080/list/updateuser', data, {
             headers: {
                 Authorization: 'bearer '+ token
@@ -90,9 +89,9 @@ function ProfileChange(props) {
         })
         .then(res => {
             dispatch(moreUserInfoLocally({
-                profileUrl: res.profileUrl,
-                username: res.username,
-                status: res.status
+                profileUrl: res.data.profileUrl,
+                username: res.data.username,
+                status: res.data.status
             }));
             setLoading(false);
             dispatch(SHOWPROFILEEDITVIEW(false));

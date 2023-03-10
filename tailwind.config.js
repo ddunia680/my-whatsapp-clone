@@ -18,7 +18,8 @@ module.exports = {
         iconsColor: "#7f8e98",
         mainTextColor: "#c6edef",
         mainInput: "#2a3942",
-        myMessage: "#005c4b"
+        myMessage: "#005c4b",
+        greenSpecial: '#16a34a'
       },
       backgroundImage: {
         'wallpaper': "url(./images/wallpaper.jpg)"

@@ -146,7 +146,7 @@ function SignUp(props) {
 
     return (
         <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%]'>
-            <h1 className='text-xl text-green-700 font-semibold font-mono'>SIGN UP</h1>
+            <h1 className='text-xl text-green-700 font-bold font-sans'>SIGN UP</h1>
             {/* profile picture */}
             { !profile ? 
             <UserCircleIcon className=' w-[7rem] md:w-[10rem] text-darkSpecial hover:text-primary duration-300 hover:duration-300' title='Click to upload profile pic' onClick={() => profileInput.current.click()}/> : 

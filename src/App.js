@@ -18,6 +18,7 @@ function App() {
   const userId = localStorage.getItem('userId');
   const keptToken = localStorage.getItem('token');
   const token = useSelector(state => state.authenticate.token);
+  const profileUrl = useSelector(state => state.authenticate.profileUrl);
 
 // console.log(new Date(expiryDate).getTime() - new Date().getTime());
 // console.log("the date now "+new Date().getTime());
@@ -40,6 +41,10 @@ function App() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log('profile changed');
+  }, [profileUrl]);
 
   const OperateLogout = (milliseconds) => {
     console.log(milliseconds);

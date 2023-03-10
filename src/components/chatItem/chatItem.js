@@ -8,6 +8,7 @@ import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
 
 function ChatItem(props) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
 
     const openChat = () => {
@@ -22,18 +23,24 @@ function ChatItem(props) {
         }
         
     }
-    const navigate = useNavigate();
+    
     return (
         <div className='flex justify-start items-center w-[100%] hover:bg-primary' onClick={() => openChat()}>
-            <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/>
+            { !props.profile ? 
+            <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
+            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
+                <img src={props.profile} alt='the profile' className='w-[100%] h-[100%]'/>
+            </div>
+            }
             <div className='flex justify-between items-center w-[79%] border-b-[1px] border-gray-500'>
                 <div className='flex flex-col justify-start items-start py-2 w-[79%]'>
-                    <h2 className='text-gray-100 text-lg'>Charles Dunia</h2>
+                    <h2 className='text-gray-100 text-lg'>{props.username}</h2>
+                    { props.message ? 
                     <p className="w-[100%] text-gray-500 text-sm flex flex-row">
-                        <CheckIcon className='w-[1rem]'/> Thank you man
-                    </p>
+                        <CheckIcon className='w-[1rem]'/>{props.message}</p> : 
+                    <p className='w-[100%] text-gray-500 text-sm flex flex-row'>{props.status}</p>}
                 </div>
-                <UnreadMessage number='202'/>
+                { props.message ? <UnreadMessage number='202'/> : null }
             </div>
             
         </div>

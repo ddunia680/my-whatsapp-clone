@@ -1,17 +1,48 @@
 import { ArrowLeftIcon} from '@heroicons/react/24/outline';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import SearchBar from '../../components/searchBar/searchBar';
 import ChatItem from '../../components/chatItem/chatItem';
 import './newChatView.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { SETNEWCHATUIVISIBILITY } from '../../store/uiStates';
+import { getAllUsers } from '../../store/users';
+import Spinner from '../../UI/spinner/spinner';
 
 function NewChatView(props) {
     const dispatch = useDispatch();
     const newChatUI = useSelector(state => state.uiStates.newChatUI);
+    const userId = useSelector(state => state.authenticate.userId);
+    const usersLoadingState = useSelector(state => state.users.usersLoadingState);
+    const usersArray = useSelector(state => state.users.users);
+    const token = useSelector(state => state.authenticate.token);
+
+
     const newChartClasses = ['absolute top-0 left-0 bg-darkSpecial w-[100%] md:min-w-[20rem] md:w-[30%] h-[100vh] flex flex-col justify-start items-start border-r-[1px] border-gray-500 z-100', newChatUI ? 'NewVVisible' : 'NewVInvisible'];
-    console.log(newChatUI);
+
+    useEffect(() => {
+        const info = {
+            method: 'GET',
+            url: `http://localhost:8080/list/users/${userId}`,
+            token: token
+        }
+
+        dispatch(getAllUsers(info));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    let list;
+    if(usersLoadingState === 'loading') {
+        list = <div className='text-center'><Spinner/></div>
+    } else if(usersLoadingState === 'succeeded') {
+        list = usersArray.map(usr => (
+            <ChatItem profile={usr.profileUrl} username={usr.username} status={usr.status} key={usr._id}/>
+            ))
+    } else if(usersLoadingState === 'failed') {
+        list = <p className='text-center text-mainTextColor'>Oops, Something went wrong...</p>
+    } else if(!usersArray.length) {
+        list = <p className='text-center text-mainTextColor'>You're the only user the App has</p>
+    }
 
     return (
         <div className={newChartClasses.join(' ')}>
@@ -21,24 +52,7 @@ function NewChatView(props) {
             </div>
             <SearchBar filter={false} placeHolder="Search contact"/>
             <div className='w-[100%] overflow-y-scroll newChat'>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                {/* <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/>
-                <ChatItem/> */}
+                {list}
             </div>
             
 

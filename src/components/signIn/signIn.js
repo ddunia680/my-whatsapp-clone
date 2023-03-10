@@ -5,6 +5,9 @@ import Spinner from '../../UI/spinner/spinner';
 import axios from 'axios';
 import { LOGIN, moreSigninInfo } from '../../store/authenticate';
 
+import cat from '../../gifs/cat.json';
+import Lottie from 'lottie-react';
+
 function SignIn(props) {
     const dispatch = useDispatch();
 
@@ -105,8 +108,11 @@ function SignIn(props) {
     }
 
     return (
-        <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%]'>
-            <h1 className='text-xl text-green-700 font-semibold font-mono'>SIGN IN</h1>
+        <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%] self-center'>
+            <div className='w-[7rem] h-[7rem]'>
+                <Lottie animationData={cat} className="w-[100%] h-[100%]"/>
+            </div>
+            <h1 className='text-xl text-green-700 font-bold font-sans'>SIGN IN</h1>
              {/* email address */}
              <div className='w-[80%]'>
                 <label className='text-sm text-green-700'>Email address</label>

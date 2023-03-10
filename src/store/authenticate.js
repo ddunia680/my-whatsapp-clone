@@ -39,6 +39,11 @@ const authenticationSlice = createSlice({
             state.profileUrl = '';
             state.username = '';
             state.status = '';
+        },
+        moreUserInfoLocally: (state, action) => {
+            state.profileUrl = action.payload.profileUrl;
+            state.username = action.payload.username;
+            state.status = action.payload.status;
         }
     },
     extraReducers(builder) {
@@ -55,5 +60,9 @@ const authenticationSlice = createSlice({
     }
 });
 
-export const { LOGIN, LOGOUT } = authenticationSlice.actions;
+export const { 
+    LOGIN, 
+    LOGOUT, 
+    moreUserInfoLocally 
+} = authenticationSlice.actions;
 export default authenticationSlice.reducer;

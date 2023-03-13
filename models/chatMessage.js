@@ -1,0 +1,39 @@
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
+
+const chatMessageSchema = new Schema({
+    from: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    to: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    isText: {
+        type: Boolean,
+        required: true
+    },
+    isImage: {
+        type: Boolean,
+        required: true
+    },
+    isAudio: {
+        type: Boolean,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    comment: {
+        type: String
+    },
+    seen: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('chatMessage', chatMessageSchema);

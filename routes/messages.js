@@ -8,4 +8,10 @@ router.post('/message',isAuth ,messagesController.postAMessage);
 
 router.get('/chatMessages/:interlocutor', isAuth, messagesController.getChat);
 
+router.post('/storeLastMessage', isAuth, messagesController.storeLast);
+
+router.post('/create_chat', messagesController.createChat);
+
+router.get('/getChats', isAuth, messagesController.getMyChats);
+
 module.exports = router;

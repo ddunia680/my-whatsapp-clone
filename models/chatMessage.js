@@ -33,7 +33,8 @@ const chatMessageSchema = new Schema({
     seen: {
         type: Boolean,
         default: false
-    }
+    },
+    order: Number
 }, { timestamps: true });
 
 module.exports = mongoose.model('chatMessage', chatMessageSchema);

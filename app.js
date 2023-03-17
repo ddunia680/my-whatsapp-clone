@@ -44,4 +44,18 @@ mongoose.connect(process.env.CONNECT_STRING)
     const server = app.listen(8080, () => {
         console.log('server is on');
     });
+    const io = require('./socket').init(server);
+    io.on('connection', socket => {
+        console.log(`Client ${socket.id} is connected`);
+        // console.log();
+
+        socket.on('join_room', (data, user_id) => {
+            socket.join(data);
+            console.log(`User with ID ${socket.id} joined room ${data}`);
+        })
+
+        socket.on('disconnect', () => {
+            console.log(`User ${socket.id} disconnected`);
+        })
+    });
 });

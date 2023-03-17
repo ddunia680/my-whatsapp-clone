@@ -36,7 +36,7 @@ function NewChatView(props) {
         list = <div className='text-center'><Spinner/></div>
     } else if(usersLoadingState === 'succeeded') {
         list = usersArray.map(usr => (
-            <ChatItem profile={usr.profileUrl} username={usr.username} status={usr.status} key={usr._id}/>
+            <ChatItem profile={usr.profileUrl} username={usr.username} status={usr.status} _id={usr._id} key={usr._id}/>
             ))
     } else if(usersLoadingState === 'failed') {
         list = <p className='text-center text-mainTextColor'>Oops, Something went wrong...</p>

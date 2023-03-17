@@ -3,39 +3,20 @@ import { UserCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { SETNEWCHATUIVISIBILITY, SETSHOWWELCOMEVIEW } from '../../store/uiStates';
-import { createChat } from '../../store/messages';
-import { getInterlocutor } from '../../store/users';
+import { SETSHOWWELCOMEVIEW } from '../../store/uiStates';
+// import { createChat } from '../../store/messages';
+// import { getInterlocutor } from '../../store/users';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
 
-function ChatItem(props) {
+function MyChatItem(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
-    const token = useSelector(state => state.authenticate.token);
-    const interlocutor = useSelector(state => state.users.interlocutor);
-    const userId = useSelector(state => state.authenticate.userId);
+    // const token = useSelector(state => state.authenticate.token);
+    // const interlocutor = useSelector(state => state.users.interlocutor);
+    // const userId = useSelector(state => state.authenticate.userId);
 
     const openChat = () => {
-        const info = {
-            method: 'GET',
-            url: `http://localhost:8080/list/interlocutor/${props._id}`,
-            token: token
-        }
-        dispatch(SETNEWCHATUIVISIBILITY(false));
-        dispatch(getInterlocutor(info)).then(res => {
-            const chatInfo = {
-                method: 'POST',
-                url: `http://localhost:8080/create_chat`,
-                data: {
-                    user1: userId,
-                    user2: interlocutor._id
-                },
-                token: token
-            }
-            dispatch(createChat(chatInfo));
-        })
-
         if(window.innerWidth <= 500) {
             navigate('/chatWindow');
         } else {
@@ -71,4 +52,4 @@ function ChatItem(props) {
     );
 }
 
-export default ChatItem;
+export default MyChatItem;

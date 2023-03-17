@@ -14,6 +14,21 @@ export const getAllUsers = createAsyncThunk(
             })
         }
     }
+);
+
+export const getInterlocutor = createAsyncThunk(
+    'data/interlocutor',
+    (info) => {
+        if(info.method === 'GET') {
+            return axios.get(info.url, {
+                headers: {
+                    Authorization: 'Bearer '+ info.token
+                }
+            }).then(res => {
+                return res.data.user;
+            })
+        }
+    }
 )
 
 const usersSlice = createSlice({
@@ -21,6 +36,7 @@ const usersSlice = createSlice({
     initialState: {
        users: [],
        usersLoadingState: 'idle',
+       interlocutor: null,
        error: ''
     },
     reducers: {
@@ -39,6 +55,15 @@ const usersSlice = createSlice({
         })
         .addCase(getAllUsers.rejected, (state, action) => {
             state.usersLoadingState = 'failed';
+            state.error = action.error.message;
+        });
+
+        builder
+        .addCase(getInterlocutor.fulfilled, (state, action) => {
+            // console.log(action.payload);
+            state.interlocutor = action.payload;
+        })
+        .addCase(getInterlocutor.rejected, (state, action) => {
             state.error = action.error.message;
         })
     }

@@ -10,8 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { LOGIN, LOGOUT, moreSigninInfo } from "./store/authenticate";
 
-;
-
 function App() {
   const dispatch = useDispatch();
   const expiryDate = localStorage.getItem('expiryDate');
@@ -43,7 +41,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log('profile changed');
+    console.log('');
   }, [profileUrl]);
 
   const OperateLogout = (milliseconds) => {

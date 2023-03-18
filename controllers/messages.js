@@ -110,120 +110,80 @@ exports.postAMessage = (req, res, next) => {
     
 }
 
-exports.createChat = (req, res, next) => {
-    const userId = req.body.user1;
-    const interlocutor = req.body.user2;
-    let theChats;
+exports.findChat = (req, res, next) => {
+    const userId = req.userId;
+    const interlocutor = req.params.interlocutor;
 
-    Chat.find(
-        {
-            user1: userId, 
-            user2: interlocutor
-        })
-    .then(chats => {
-        theChats = chats
-        
-        Chat.find({
-            user1: interlocutor, 
-            user2: userId
-        })
-        .then(nextChats => {
-            theChats = [...theChats, ...nextChats];
-
-            if(!theChats.length) {
-                const newChat = new Chat();
-                newChat.user1 = userId;
-                newChat.user2 = interlocutor;
-    
-                newChat.save()
-                .then(chat => {
-                    res.status(201).json({
-                        message: 'chat created',
-                        chat: chat
-                    })
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(500).json({
-                        message: 'something went wrong server-side'
-                    })
-                })
-            } else {
-                res.status(200).json({
-                    message: 'chat aready exists',
-                    chat: theChats[0]
-                })
-            }
-
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                message: 'something went wrong server-side'
+    Chat.find({ $or : [{user1: userId, user2: interlocutor}, {user1: interlocutor, user2: userId}]})
+    .then(chat => {
+        if(!chat.length) {
+            res.status(200).json({
+                message: 'this is a new chat',
+                currentChat: null
             })
+        } else {
+            res.status(200).json({
+                message: 'chat already exists',
+                currentChat: chat[0]._id
+            })
+        }
+
+    })
+}
+
+exports.createChat = (req, res, next) => {
+    const userId = req.body.userId;
+    const interlocutor = req.body.interlocutor;
+    
+    const chat = new Chat();
+    chat.user1 = userId;
+    chat.user2 = interlocutor;
+
+    chat.save()
+    .then(response => {
+        res.status(200).json({
+            message: 'Chat created',
+            chatId: response._id
         })
     })
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            message: 'something went wrong server-side'
+            message: 'Something went wrong server-side'
         })
     })
-
 }
 
 exports.getMyChats = (req, res, next) => {
-    let theChats = [];
-    let chatsToSend = [];
-    Chat.find({user1: req.userId})
-    .then(fstChats => {
-        theChats = [...fstChats];
-        Chat.find({user2: req.userId})
-        .then(scondChats => {
-            theChats = [...theChats, ...scondChats];
-            
-            if(!theChats.length) {
-                return res.status(200).json({
-                    chats: []
-                })
+    const userId = req.userId;
+
+    Chat.find({ $or: [{user1: userId}, {user2: userId }] }).populate('user1', {username: 1, status: 1, profileUrl: 1}).populate('user2', {username: 1, status: 1, profileUrl: 1})
+    .then(chats => {
+        if(chats.length === 0) {
+            return res.status(200).json({
+                message: 'No chats yet',
+                chats: []
+            })
+        }
+        const chatsToSend = [];
+        chats.forEach(chat => {
+            let theChat = {
+                _id: chat._id,
+                interlocutor: chat.user1._id.toString() !== userId.toString() ? chat.user1 : chat.user2,
+                lastMessage: chat.lastMessage ? chat.lastMessage : 'no message yet',
+                sentBy: chat.sentBy
             }
 
-            theChats.forEach(chatItem => {
-                if(chatItem.user1 !== req.userId) {
-                    User.findById(chatItem.user1, {username: 1, status: 1, profileUrl: 1})
-                    .then(user => {
-                        const neededInfo = {...user, lastMessage: chatItem.lastMessage, chatId: chatItem._id}
-                         
-                        chatsToSend.push(neededInfo);
-                    })
-                } else if(chatItem.user2 !== req.userId) {
-                    User.findById(chatItem.user2, {username: 1, status: 1, profileUrl: 1})
-                    .then(user => {
-                        const neededInfo = {...user, lastMessage: chatItem.lastMessage, chatId: chatItem._id}
-                         
-                        chatsToSend.push(neededInfo);
-                    })
-                } else {
-                    console.log('nothing to collect');
-                }
-            })
-
-            return res.status(200).json({
-                message: 'my chats',
-                chats: chatsToSend
-            })
+            chatsToSend.push(theChat);
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                message: 'something went wrong server-side'
-            })
+        res.status(200).json({
+            message: 'the chats',
+            chats: chatsToSend
         })
     })
     .catch(err => {
-        console.log(err);
         res.status(500).json({
-            message: 'something went wrong server-side'
+            message: 'Something went wrong server-side'
         })
     })
 }
@@ -231,10 +191,13 @@ exports.getMyChats = (req, res, next) => {
 exports.storeLast = (req, res, next) => {
     const theChat = req.body.currentChat;
     const theMessages = req.body.message;
+    const sentBy = req.body.sentBy;
 
     Chat.findById(theChat)
     .then(chat => {
         chat.lastMessage = theMessages;
+        chat.sentBy = sentBy;
+
         return chat.save();
     })
     .then(updatedChat => {
@@ -243,6 +206,7 @@ exports.storeLast = (req, res, next) => {
         })
     })
     .catch(err => {
+        console.log(err);
         res.status(500).json({
             message: 'something went wrong server-side'
         })

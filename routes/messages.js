@@ -10,6 +10,8 @@ router.get('/chatMessages/:interlocutor', isAuth, messagesController.getChat);
 
 router.post('/storeLastMessage', isAuth, messagesController.storeLast);
 
+router.get('/find_chat/:interlocutor', isAuth, messagesController.findChat);
+
 router.post('/create_chat', messagesController.createChat);
 
 router.get('/getChats', isAuth, messagesController.getMyChats);

@@ -9,6 +9,7 @@ import RightView from "./containers/rightView/rightView";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { LOGIN, LOGOUT, moreSigninInfo } from "./store/authenticate";
+import { RESETCURRENTCHAT } from "./store/messages";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function App() {
   useEffect(() => {
     if(new Date(expiryDate).getTime() <= new Date().getTime()) {
       dispatch(LOGOUT());
+      dispatch(RESETCURRENTCHAT());
     }
 
     if(!token && keptToken) {
@@ -48,6 +50,7 @@ function App() {
     console.log(milliseconds);
     setTimeout(() => {
       dispatch(LOGOUT());
+      dispatch(RESETCURRENTCHAT());
     }, [milliseconds]);
   }
 

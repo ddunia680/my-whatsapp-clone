@@ -40,7 +40,9 @@ const usersSlice = createSlice({
        error: ''
     },
     reducers: {
-
+        SETINTERLOCUTORLOCALLY: (state, action) => {
+            state.interlocutor = action.payload;
+        }
     },
     extraReducers(builder) {
         builder
@@ -70,4 +72,5 @@ const usersSlice = createSlice({
     
 });
 
+export const { SETINTERLOCUTORLOCALLY } = usersSlice.actions;
 export default usersSlice.reducer;

@@ -3,12 +3,15 @@ import { MicrophoneIcon, PaperClipIcon, FaceSmileIcon } from '@heroicons/react/2
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
 import { SETAUDIOUIVISIBILITY } from '../../store/uiStates';
-import { storeLastMessage, uploadMessage } from '../../store/messages';
+import { pullChats, SETCURRENTCHAT, storeLastMessage, uploadMessage } from '../../store/messages';
+import axios from 'axios';
 
 function InputControl(props) {
     const token = useSelector(state => state.authenticate.token);
+    const userId = useSelector(state => state.authenticate.userId);
     const interlocutor = useSelector(state => state.users.interlocutor);
     const currentChat = useSelector(state => state.messages.currentChat);
+    // console.log(currentChat);
     const [textValue, setTextValue] = useState('');
     const fileInput = useRef();
     const dispatch = useDispatch();
@@ -30,17 +33,50 @@ function InputControl(props) {
 
         dispatch(uploadMessage(info))
         .then(res => {
-            const localInfo = {
-                url: 'http://localhost:8080/storeLastMessage',
-                data: {
-                    currentChat: currentChat._id,
-                    message: textValue
-                },
-                token: token
+            if(currentChat) {
+                console.log("currentChat was already set");
+                const localInfo = {
+                    url: 'http://localhost:8080/storeLastMessage',
+                    data: {
+                        currentChat: currentChat,
+                        message: textValue,
+                        sentBy: userId
+                    },
+                    token: token
+                }
+                dispatch(storeLastMessage(localInfo)).then(res => {
+                    dispatch(pullChats({
+                        token: token,
+                        url: 'http://localhost:8080/getChats'}))
+                });
+            } else {
+                console.log('we instead created the chat');
+                    const data = {
+                        userId: userId,
+                        interlocutor: interlocutor._id
+                    }
+                axios.post('http://localhost:8080/create_chat', data)
+                .then(res => {
+                        dispatch(SETCURRENTCHAT(res.data.chatId));
+                    const localInfo = {
+                        url: 'http://localhost:8080/storeLastMessage',
+                        data: {
+                            currentChat: res.data.chatId,
+                            message: textValue,
+                            sentBy: userId
+                        },
+                        token: token
+                    }
+                    dispatch(storeLastMessage(localInfo)).then(res => {
+                        dispatch(pullChats({
+                            token: token,
+                            url: 'http://localhost:8080/getChats'}))
+                    });
+                })
             }
-            dispatch(storeLastMessage(localInfo));
         })
         setTextValue('');
+        
     }
 
 

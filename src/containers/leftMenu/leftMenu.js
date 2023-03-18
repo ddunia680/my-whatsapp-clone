@@ -11,7 +11,6 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
-    console.log(myChats);
     useEffect(() => {
         const info = {
             token: token,
@@ -23,15 +22,18 @@ function LeftMenu(props) {
 
     let chats;
     if(chatsLoadingState === 'loading') {
-        chats = <p className='mx-auto'><Spinner/></p>
-    } else if(myChats.length < 0) {
+        chats = <div className='mx-auto'><Spinner/></div>
+    } else if(chatsLoadingState === 'succeeded') {
         chats = myChats.map(singleChat => {
             return <MyChatItem 
-                        username={singleChat.username}
-                        profile={singleChat.profileURL}
+                        inter={singleChat.interlocutor}
+                        username={singleChat.interlocutor.username}
+                        profile={singleChat.interlocutor.profileUrl}
                         message={singleChat.lastMessage}
-                        status={singleChat.status}
-                        />
+                        sentBy={singleChat.sentBy}
+                        chatId={singleChat._id}
+                        key={singleChat._id}
+                    />
         })
     } else if(!myChats.length) {
         chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>

@@ -1,10 +1,10 @@
 import { UserCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SETNEWCHATUIVISIBILITY, SETSHOWWELCOMEVIEW } from '../../store/uiStates';
-import { createChat } from '../../store/messages';
+import { findChat, SETCURRENTCHAT } from '../../store/messages';
 import { getInterlocutor } from '../../store/users';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
 
@@ -14,7 +14,7 @@ function ChatItem(props) {
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
     const token = useSelector(state => state.authenticate.token);
     const interlocutor = useSelector(state => state.users.interlocutor);
-    const userId = useSelector(state => state.authenticate.userId);
+    // const userId = useSelector(state => state.authenticate.userId);
 
     const openChat = () => {
         const info = {
@@ -23,18 +23,7 @@ function ChatItem(props) {
             token: token
         }
         dispatch(SETNEWCHATUIVISIBILITY(false));
-        dispatch(getInterlocutor(info)).then(res => {
-            const chatInfo = {
-                method: 'POST',
-                url: `http://localhost:8080/create_chat`,
-                data: {
-                    user1: userId,
-                    user2: interlocutor._id
-                },
-                token: token
-            }
-            dispatch(createChat(chatInfo));
-        })
+        dispatch(getInterlocutor(info));
 
         if(window.innerWidth <= 500) {
             navigate('/chatWindow');
@@ -47,6 +36,19 @@ function ChatItem(props) {
         }
         
     }
+
+    useEffect(() => {
+        if(interlocutor) {
+            dispatch(SETCURRENTCHAT(null));
+            const theInfo = {
+                method: 'GET',
+                url: `http://localhost:8080/find_chat/${interlocutor._id}`,
+                token: token
+            }
+            dispatch(findChat(theInfo));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [interlocutor]);
     
     return (
         <div className='flex justify-start items-center w-[100%] hover:bg-primary' onClick={() => openChat()}>

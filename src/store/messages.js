@@ -33,19 +33,23 @@ export const pullAllMessages = createAsyncThunk(
     }
 );
 
-export const createChat = createAsyncThunk(
-    'data/createChat',
+export const findChat = createAsyncThunk(
+    'data/findChat', 
     (info) => {
-        if(info.method === 'POST') {
-            return axios.post(info.url, info.data)
+        if(info.method === 'GET') {
+            return axios.get(info.url, {
+                headers: {
+                    Authorization: "Bearer "+ info.token
+                }
+            })
             .then(res => {
-                // console.log(res.data.chat);
-                // console.log(res.data.message);
-                return res.data.chat;
+                console.log(res.data.message);
+                // console.log(res.data.currentChat);
+                return res.data.currentChat;
             })
         }
     }
-);
+)
 
 export const pullChats = createAsyncThunk(
     'data/getChats',
@@ -85,7 +89,14 @@ const messagesSlice = createSlice({
         currentChat: null,
         error: ''
     },
-    reducers: {},
+    reducers: {
+        RESETCURRENTCHAT: (state, action) => {
+            state.currentChat = null
+        },
+        SETCURRENTCHAT: (state, action) => {
+            state.currentChat = action.payload;
+        }
+    },
     extraReducers(builder) {
         builder
         .addCase(uploadMessage.fulfilled, (state, action) => {
@@ -111,8 +122,10 @@ const messagesSlice = createSlice({
         })
 
         builder
-        .addCase(createChat.fulfilled, (state, action) => {
-            state.currentChat = action.payload;
+        .addCase(findChat.fulfilled, (state, action) => {
+            if(action.payload) {
+                state.currentChat = action.payload;
+            }
         })
 
         builder
@@ -130,4 +143,5 @@ const messagesSlice = createSlice({
     }
 });
 
+export const { RESETCURRENTCHAT, SETCURRENTCHAT } = messagesSlice.actions;
 export default messagesSlice.reducer;

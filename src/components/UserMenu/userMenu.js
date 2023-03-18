@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { LOGOUT } from '../../store/authenticate';
+import { RESETCURRENTCHAT } from '../../store/messages';
 import { SHOWPROFILEEDITVIEW } from '../../store/uiStates';
 import "./userMenu.css";
 
@@ -12,6 +13,7 @@ function UserMenu(props) {
     const logoutHandler = () => {
         props.menuVisibility(false);
         dispatch(LOGOUT());
+        dispatch(RESETCURRENTCHAT());
     }
 
     const profileChangeHandler = () => {

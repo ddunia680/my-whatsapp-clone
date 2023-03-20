@@ -49,10 +49,16 @@ mongoose.connect(process.env.CONNECT_STRING)
         console.log(`Client ${socket.id} is connected`);
         // console.log();
 
-        socket.on('join_room', (data, user_id) => {
-            socket.join(data);
-            console.log(`User with ID ${socket.id} joined room ${data}`);
+        socket.on('setup', (user_id) => {
+            console.log(`User ${socket.id} initially joined room ${user_id}`);
+            socket.join(user_id);
+            // socket.emit("connected");
         })
+
+        socket.on('joint_chat', room => {
+            socket.join(room);
+            console.log('User ' + socket.id + 'joined room ' + room);
+        }); 
 
         socket.on('disconnect', () => {
             console.log(`User ${socket.id} disconnected`);

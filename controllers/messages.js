@@ -1,6 +1,7 @@
 const Message = require('../models/chatMessage');
 const Chat = require('../models/chat');
 const User = require('../models/user');
+const socket = require('../socket');
 
 exports.getChat = (req, res, next) => {
     const userId = req.userId;
@@ -90,6 +91,14 @@ exports.postAMessage = (req, res, next) => {
             return Message.findOneAndUpdate({_id: response._id}, {order: +(lastElementOrder + 1)});
         })
         .then(allresponse => {
+            // console.log(allresponse);
+            if(socket) {
+                console.log('emiting to room' + from);
+                // socket.getIO().on('sent-message', () => {
+                    socket.getIO().to(from).emit('received-message', allresponse);
+                // });
+            }
+
             return res.status(200).json({
                 message: allresponse
             })

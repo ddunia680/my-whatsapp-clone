@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
         })
     }
     if(!decodedToken) {
-        return res.status(400).json({
+        res.status(400).json({
             message: 'Not Authenticated!'
         })
     }

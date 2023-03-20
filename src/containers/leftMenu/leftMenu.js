@@ -5,12 +5,19 @@ import MyChatItem from '../../components/chatItem/myChatItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { pullChats } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
+import { ADDLIVEMESSAGE } from '../../store/messages';
+import io from '../../utility/socket';
+
+const ENDPOINT = 'http://localhost:8080';
 
 function LeftMenu(props) {
     let dispatch = useDispatch();
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
+    const userId = useSelector(state => state.authenticate.userId);
+    // const [socketConnected, setSocketConnectivity] = useState(false);
+
     useEffect(() => {
         const info = {
             token: token,
@@ -19,6 +26,23 @@ function LeftMenu(props) {
         dispatch(pullChats(info))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        const socket = io.init(ENDPOINT);
+        socket.emit("setup", userId);
+        socket.on('connection');
+        console.log('socket connected');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if(io) {
+          io.getIO().on('received-message', message => {
+            dispatch(ADDLIVEMESSAGE(message));
+          })
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     let chats;
     if(chatsLoadingState === 'loading') {

@@ -14,6 +14,8 @@ function ChatWindow(props) {
     const messagesArray = useSelector(state => state.messages.messagesArray);
     const loadingState = useSelector(state => state.messages.messagesLoadingState);
     const chatWindowUI = useRef();
+    const bottomDiv = useRef();
+
 
     useEffect(() => {
         if(interlocutor) {
@@ -43,10 +45,14 @@ function ChatWindow(props) {
         }
     }
 
+    useEffect(() => {
+        bottomDiv.current.scrollIntoView({behavior: 'smooth' })
+    }, [chatMessages]);
+
     return (
         <div ref={chatWindowUI} className='relative w-[100%] mt-[3.5rem] md:mt-0 mb-[3.5rem] md:mb-0 h-[100%] md:h-[85%] bg-wallpaper overflow-y-scroll chatWindow'>
             {chatMessages}
-            {/* <Message me={false} audio={theAudio}/> */}          
+            <div ref={bottomDiv}/>  
         </div>
     );
 }

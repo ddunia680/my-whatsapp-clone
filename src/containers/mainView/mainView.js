@@ -20,6 +20,7 @@ function MainView(props) {
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
     // const interlocutor = useSelector(state => state.users.newChatUI)
     const token = useSelector(state => state.authenticate.token);
+
     return (
         <div className='fixed md:flex md:justify-start md:items-start w-[100vw] h-[100vh] bg-darkSpecial 2xl:p-3'>
             { token ? <LeftMenu/> :

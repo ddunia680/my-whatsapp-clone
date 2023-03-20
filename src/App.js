@@ -1,4 +1,3 @@
-// import { useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 
 import SearchMessage from "./components/searchMessage/searchMessage";
@@ -43,7 +42,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log('');
   }, [profileUrl]);
 
   const OperateLogout = (milliseconds) => {

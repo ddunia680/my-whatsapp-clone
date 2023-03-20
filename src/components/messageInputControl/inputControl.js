@@ -11,7 +11,6 @@ function InputControl(props) {
     const userId = useSelector(state => state.authenticate.userId);
     const interlocutor = useSelector(state => state.users.interlocutor);
     const currentChat = useSelector(state => state.messages.currentChat);
-    // console.log(currentChat);
     const [textValue, setTextValue] = useState('');
     const fileInput = useRef();
     const dispatch = useDispatch();

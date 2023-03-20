@@ -11,7 +11,7 @@ function AudioRecording(props) {
     const [recording, setRecording] = useState(false);
     const [timeRecorded, setTimeRecorded] = useState(0);
     const [theAudio, setTheAudio] = useState(null);
-    // console.log(theAudio);
+    console.log(theAudio);
 
     useEffect(() => {
         if(recordingUI) {

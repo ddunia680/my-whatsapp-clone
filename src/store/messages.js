@@ -95,12 +95,15 @@ const messagesSlice = createSlice({
         },
         SETCURRENTCHAT: (state, action) => {
             state.currentChat = action.payload;
+        },
+        ADDLIVEMESSAGE: (state, action) => {
+            state.messagesArray.push(action.payload);
         }
     },
     extraReducers(builder) {
         builder
         .addCase(uploadMessage.fulfilled, (state, action) => {
-            state.messagesArray.push(action.payload);
+            // state.messagesArray.push(action.payload);
             // console.log(action.payload);
         })
         .addCase(uploadMessage.rejected, (state, action) => {
@@ -143,5 +146,5 @@ const messagesSlice = createSlice({
     }
 });
 
-export const { RESETCURRENTCHAT, SETCURRENTCHAT } = messagesSlice.actions;
+export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE } = messagesSlice.actions;
 export default messagesSlice.reducer;

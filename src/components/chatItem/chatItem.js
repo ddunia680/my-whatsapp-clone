@@ -7,6 +7,7 @@ import { SETNEWCHATUIVISIBILITY, SETSHOWWELCOMEVIEW } from '../../store/uiStates
 import { findChat, SETCURRENTCHAT } from '../../store/messages';
 import { getInterlocutor } from '../../store/users';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
+import io from '../../utility/socket';
 
 function ChatItem(props) {
     const dispatch = useDispatch();
@@ -46,6 +47,14 @@ function ChatItem(props) {
                 token: token
             }
             dispatch(findChat(theInfo));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [interlocutor]);
+
+    useEffect(() => {
+        if(interlocutor) {
+            const socket = io.get();
+                socket.emit('joint_chat', interlocutor._id);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [interlocutor]);

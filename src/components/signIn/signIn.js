@@ -3,12 +3,12 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
 import Spinner from '../../UI/spinner/spinner';
 import axios from 'axios';
-import { LOGIN, moreSigninInfo } from '../../store/authenticate';
-import openSocket from 'socket.io-client';
+import { LOGIN, moreSigninInfo } from '../../store/authenticate'
 
 import cat from '../../gifs/cat.json';
 import Lottie from 'lottie-react';
 import { SETSHOWWELCOMEVIEW } from '../../store/uiStates';
+
 
 function SignIn(props) {
     const dispatch = useDispatch();
@@ -92,7 +92,6 @@ function SignIn(props) {
             dispatch(LOGIN({token: res.data.token, userId: res.data.userId}));
             dispatch(moreSigninInfo(info));
             dispatch(SETSHOWWELCOMEVIEW(true));
-            openSocket("http://localhost:8080");
             // socket.emit()
         })
         .catch(err => {

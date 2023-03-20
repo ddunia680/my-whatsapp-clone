@@ -1,18 +1,20 @@
 import { UserCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SETNEWCHATUIVISIBILITY, SETSHOWWELCOMEVIEW } from '../../store/uiStates';
 import { SETCURRENTCHAT } from '../../store/messages';
 import { SETINTERLOCUTORLOCALLY } from '../../store/users';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
+import io from '../../utility/socket';
 
 function MyChatItem(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
     const userId = useSelector(state => state.authenticate.userId);
+    const interlocutor = useSelector(state => state.users.interlocutor);
 
     const openChat = () => {
         dispatch(SETNEWCHATUIVISIBILITY(false));
@@ -29,6 +31,14 @@ function MyChatItem(props) {
         }
         
     }
+
+    useEffect(() => {
+        if(interlocutor) {
+            const socket = io.getIO();
+                socket.emit('joint_chat', interlocutor._id);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [interlocutor]);
     
     return (
         <div className='flex justify-start items-center w-[100%] hover:bg-primary' onClick={() => openChat()}>

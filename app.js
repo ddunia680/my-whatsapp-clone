@@ -39,6 +39,9 @@ app.use(multer({fileFilter: fileFilter}).single('image'));
 app.use('/auth', authRoutes);
 app.use('/list', usersRoutes);
 app.use(messagesRoutes);
+app.use('/', (req, res) => {
+    res.send('welcome to the server');
+})
 
 // console.log(process.env.CONNECT_STRING);
 mongoose.connect(process.env.CONNECT_STRING)

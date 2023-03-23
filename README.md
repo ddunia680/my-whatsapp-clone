@@ -1,1 +1,0 @@
-# my-whatsapp-clone: this is an app that simulates certain whatsapp functionalities. It is aimed at allowing users to communicate from text messages to audio messages and further more audio and video calls

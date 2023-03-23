@@ -82,7 +82,7 @@ function ProfileChange(props) {
             data.append('status', newStatus) : 
             console.log("status didn't change");
         
-        axios.put('http://localhost:8080/list/updateuser', data, {
+        axios.put(`${process.env.REACT_APP_BACKEND_URL}list/updateuser`, data, {
             headers: {
                 Authorization: 'bearer '+ token
             }

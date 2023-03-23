@@ -20,7 +20,7 @@ function ChatItem(props) {
     const openChat = () => {
         const info = {
             method: 'GET',
-            url: `http://localhost:8080/list/interlocutor/${props._id}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}list/interlocutor/${props._id}`,
             token: token
         }
         dispatch(SETNEWCHATUIVISIBILITY(false));
@@ -43,7 +43,7 @@ function ChatItem(props) {
             dispatch(SETCURRENTCHAT(null));
             const theInfo = {
                 method: 'GET',
-                url: `http://localhost:8080/find_chat/${interlocutor._id}`,
+                url: `${process.env.REACT_APP_BACKEND_URL}find_chat/${interlocutor._id}`,
                 token: token
             }
             dispatch(findChat(theInfo));

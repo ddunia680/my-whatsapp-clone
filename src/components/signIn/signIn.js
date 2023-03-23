@@ -73,7 +73,7 @@ function SignIn(props) {
         data.append('email', email);
         data.append('password', password);
 
-        axios.post('http://localhost:8080/auth/login', data)
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}auth/login`, data)
         .then(res => {
             setLoading(false);
             // console.log(res.data);
@@ -87,7 +87,7 @@ function SignIn(props) {
 
             const info = {
                 method: 'GET',
-                url: `http://localhost:8080/auth/moreLoginInfo/${res.data.userId}`
+                url: `${process.env.REACT_APP_BACKEND_URL}auth/moreLoginInfo/${res.data.userId}`
             }
             dispatch(LOGIN({token: res.data.token, userId: res.data.userId}));
             dispatch(moreSigninInfo(info));

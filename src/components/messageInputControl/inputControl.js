@@ -25,7 +25,7 @@ function InputControl(props) {
         }
         const info = {
             method: 'POST',
-            url: `http://localhost:8080/message`,
+            url: `${process.env.REACT_APP_BACKEND_URL}message`,
             data: data,
             token: token
         }
@@ -35,7 +35,7 @@ function InputControl(props) {
             if(currentChat) {
                 console.log("currentChat was already set");
                 const localInfo = {
-                    url: 'http://localhost:8080/storeLastMessage',
+                    url: `${process.env.REACT_APP_BACKEND_URL}storeLastMessage`,
                     data: {
                         currentChat: currentChat,
                         message: textValue,
@@ -46,7 +46,7 @@ function InputControl(props) {
                 dispatch(storeLastMessage(localInfo)).then(res => {
                     dispatch(pullChats({
                         token: token,
-                        url: 'http://localhost:8080/getChats'}))
+                        url: `${process.env.REACT_APP_BACKEND_URL}getChats`}))
                 });
             } else {
                 console.log('we instead created the chat');
@@ -54,11 +54,11 @@ function InputControl(props) {
                         userId: userId,
                         interlocutor: interlocutor._id
                     }
-                axios.post('http://localhost:8080/create_chat', data)
+                axios.post(`${process.env.REACT_APP_BACKEND_URL}create_chat`, data)
                 .then(res => {
                         dispatch(SETCURRENTCHAT(res.data.chatId));
                     const localInfo = {
-                        url: 'http://localhost:8080/storeLastMessage',
+                        url: `${process.env.REACT_APP_BACKEND_URL}storeLastMessage`,
                         data: {
                             currentChat: res.data.chatId,
                             message: textValue,
@@ -69,7 +69,7 @@ function InputControl(props) {
                     dispatch(storeLastMessage(localInfo)).then(res => {
                         dispatch(pullChats({
                             token: token,
-                            url: 'http://localhost:8080/getChats'}))
+                            url: `${process.env.REACT_APP_BACKEND_URL}getChats`}))
                     });
                 })
             }

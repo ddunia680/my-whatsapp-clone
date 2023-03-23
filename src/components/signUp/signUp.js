@@ -118,7 +118,7 @@ function SignUp(props) {
             data.append('confirmPass', confirmPass);
         }
 
-        axios.put('http://localhost:8080/auth/signup', data)
+        axios.put(`${process.env.REACT_APP_BACKEND_URL}auth/signup`, data)
         .then(res => {
             setLoading(false);
             // console.log(res);

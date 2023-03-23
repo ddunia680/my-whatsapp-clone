@@ -21,7 +21,7 @@ function ChatWindow(props) {
         if(interlocutor) {
             const info = {
             method: 'GET',
-            url: `http://localhost:8080/chatMessages/${interlocutor._id}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}chatMessages/${interlocutor._id}`,
             token: token
             }
 

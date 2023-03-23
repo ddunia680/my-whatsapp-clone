@@ -8,7 +8,7 @@ import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
 
-const ENDPOINT = 'http://localhost:8080';
+const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 
 function LeftMenu(props) {
     let dispatch = useDispatch();
@@ -21,7 +21,7 @@ function LeftMenu(props) {
     useEffect(() => {
         const info = {
             token: token,
-            url: 'http://localhost:8080/getChats'
+            url: `${process.env.REACT_APP_BACKEND_URL}getChats`
         }
         dispatch(pullChats(info))
     // eslint-disable-next-line react-hooks/exhaustive-deps

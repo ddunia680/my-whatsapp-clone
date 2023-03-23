@@ -23,7 +23,7 @@ function NewChatView(props) {
     useEffect(() => {
         const info = {
             method: 'GET',
-            url: `http://localhost:8080/list/users/${userId}`,
+            url: `${process.env.REACT_APP_BACKEND_URL}list/users/${userId}`,
             token: token
         }
 

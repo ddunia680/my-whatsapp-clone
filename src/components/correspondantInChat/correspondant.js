@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatMenu from '../chatMenu/chatMenu';
 
 import { UserCircleIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
@@ -8,12 +8,15 @@ import { Transition } from 'react-transition-group';
 import { SETAUDIOCALL, SETVIDEOCALL } from '../../store/uiStates';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import io from '../../utility/socket';
 
 function Correspondant(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const interlocutor = useSelector(state => state.users.interlocutor);
     const [menuIsVisible, setMenuVisibility] = useState(false);
+    const [liveStatus, setLiveStatus] = useState(false);
+    const [displayedLSeen, setDisplayedLSeen] = useState('');
 
     const menuButtonClasses = ['text-iconsColor w-[3rem] p-[0.5rem]', menuIsVisible ? 'rounded-full bg-mainInput' : null];
 
@@ -34,6 +37,36 @@ function Correspondant(props) {
         }
     }
 
+    useEffect(() => {
+        if(io.getIO()) {
+            io.getIO().on('isOnline', () => {
+                setLiveStatus(true);
+            })
+        }
+    }, []);
+
+    useEffect(() => {
+        if(interlocutor) {
+            if(interlocutor.lastSeen) {
+                let actualLastSeen = new Date(interlocutor.lastSeen);
+                console.log(interlocutor.lastSeen);
+                if(interlocutor.lastSeen === 'online') {
+                    setDisplayedLSeen(interlocutor.lastSeen);
+                } else if(actualLastSeen.getDay() === new Date().getDay()) {
+                    setDisplayedLSeen('today at ' + actualLastSeen.getHours() + ':'+actualLastSeen.getMinutes());
+                } else {
+                    setDisplayedLSeen('on '+ actualLastSeen.getDay() +' at '+ actualLastSeen.getHours()+':'+actualLastSeen.getMinutes());
+                }
+            }
+        }
+    }, [interlocutor]);
+
+    // useEffect(() => {
+    //     if(!interlocutor && window.innerHeight <= 500) {
+    //         navigate('/');
+    //     }
+    // }, []);
+
     return (
         <div className='absolute md:relative top-0 left-0 w-[100%] px-2 md:px-5 flex justify-between items-center bg-primary'>
             <div className='w-[100%] h-[3.5rem] flex justify-start items-center '>
@@ -47,8 +80,9 @@ function Correspondant(props) {
                 }
                 <div className='flex flex-col justify-start items-start py-2 w-[50%] xl:w-[70%]'>
                     <h2 className='text-gray-100 text-md md:text-lg'>{ interlocutor ? interlocutor.username: ''}</h2>
-                    <p className="text-gray-500 text-xs md:text-sm flex flex-row">
-                        { interlocutor ? interlocutor.status : ''}</p>
+                    <p className="text-gray-500 text-xs md:text-sm flex flex-row overflow-x-hidden">
+                        { interlocutor ? !liveStatus ? !interlocutor.lastSeen ? interlocutor.status : displayedLSeen : 'online' : ''}
+                    </p>
                 </div>
             </div>
 
@@ -61,10 +95,10 @@ function Correspondant(props) {
                 <EllipsisHorizontalIcon className={menuButtonClasses.join(' ')} title='menu' onClick={() => setMenuVisibility(!menuIsVisible)}/>
             </div>
             <Transition
-            in={menuIsVisible}
-            timeout={300}
-            mountOnEnter
-            unmountOnExit
+                in={menuIsVisible}
+                timeout={300}
+                mountOnEnter
+                unmountOnExit
             >
                 <ChatMenu isVisible={menuIsVisible} menuVisibility={ans => setMenuVisibility(ans)}/>
             </Transition>

@@ -53,7 +53,7 @@ function ChatItem(props) {
 
     useEffect(() => {
         if(interlocutor) {
-            const socket = io.get();
+            const socket = io.getIO();
                 socket.emit('joint_chat', interlocutor._id);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

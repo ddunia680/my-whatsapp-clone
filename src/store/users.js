@@ -62,7 +62,7 @@ const usersSlice = createSlice({
 
         builder
         .addCase(getInterlocutor.fulfilled, (state, action) => {
-            // console.log(action.payload);
+            console.log(action.payload);
             state.interlocutor = action.payload;
         })
         .addCase(getInterlocutor.rejected, (state, action) => {

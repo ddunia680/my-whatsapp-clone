@@ -4,6 +4,7 @@ import { TrashIcon, PaperAirplaneIcon } from '@heroicons/react/20/solid';
 import { PauseCircleIcon } from '@heroicons/react/24/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { SETAUDIOUIVISIBILITY } from '../../store/uiStates';
+// import axios from 'axios';
 
 function AudioRecording(props) {
     const dispatch = useDispatch();
@@ -11,7 +12,6 @@ function AudioRecording(props) {
     const [recording, setRecording] = useState(false);
     const [timeRecorded, setTimeRecorded] = useState(0);
     const [theAudio, setTheAudio] = useState(null);
-    console.log(theAudio);
 
     useEffect(() => {
         if(recordingUI) {
@@ -44,6 +44,17 @@ function AudioRecording(props) {
         }
       }, [recording, timeRecorded]);
 
+      if(theAudio) {
+        // console.log(theAudio);
+        // const data = new FormData();
+        // data.append('image', theAudio);
+        // data.append('text', 'this is the audio');
+        // axios.post('http://localhost:8080/sendAudio', data)
+        // .then(res => {
+        //     console.log("data sent");
+        //     dispatch(SETAUDIOUIVISIBILITY(false));
+        // });
+      }
 
     return (
         <div className='absolute md:relative bottom-0 left-0 w-[100%] h-[4rem] bg-primary flex justify-end items-center px-2 md:px-5 space-x-[1rem] md:space-x-[2rem] py-[0.7rem] text-mainTextColor'>

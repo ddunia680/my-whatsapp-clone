@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 function Message(props) {
     const userId = useSelector(state => state.authenticate.userId);
 
-    const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-lg";
+    const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-bl-none";
 
-    const myMessageClasses = 'relative ml-[30%] md:ml-[59%] bg-myMessage text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-lg';
+    const myMessageClasses = 'relative ml-[30%] md:ml-[59%] bg-myMessage text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-br-none';
 
     return (
         <div className={props.message.from.valueOf() !== userId.toString() ? interlocutorMessageClasses : myMessageClasses}>

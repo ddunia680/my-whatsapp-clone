@@ -107,6 +107,8 @@ function SignIn(props) {
             } else if(errMessage === 'wrong password') {
                 setPasswordValidity(false);
                 setPasswordError(errMessage);
+            } else if(+err.response.status === 500) {
+                alert('something went wrong server side, please retry');
             }
         })
     }

@@ -140,6 +140,7 @@ function SignUp(props) {
                 setConfirmPassError(errMessage);
             } else if(errMessage === "Oops..., Something went wrong server side") {
                 setMainError(errMessage);
+                alert(errMessage);
             }
         });
     }
@@ -156,7 +157,7 @@ function SignUp(props) {
             </div>
             }
             
-            <input type='file' className='hidden' ref={profileInput} onChange={e => setProfile(e.target.files[0])}/>
+            <input type='file' className='hidden' accept="image/png, image/jpg, image/jpeg" ref={profileInput} onChange={e => setProfile(e.target.files[0])}/>
 
             {/* username */}
             <div className='w-[80%]'>

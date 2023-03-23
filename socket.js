@@ -1,11 +1,11 @@
 let io;
-
+// https://my-whatsapp-clone.vercel.app
 module.exports = {
     init: httpServer => {
         io = require('socket.io')(httpServer, {
             pingTimeout: 60000,
             cors: {
-                origin: 'http://localhost:3000'
+                origin: 'https://my-whatsapp-clone.vercel.app'
             }
         });
         return io;

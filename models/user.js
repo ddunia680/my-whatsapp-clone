@@ -21,7 +21,8 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    lastSeen: String
 });
 
 module.exports = mongoose.model('User', userSchema);

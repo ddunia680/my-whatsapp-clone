@@ -46,7 +46,8 @@ exports.signUp = (req, res, next) => {
                     profileUrl: url,
                     username: username,
                     email: email,
-                    password: hashedPass
+                    password: hashedPass,
+                    lastSeen: new Date()
                 });
 
                 return user.save();

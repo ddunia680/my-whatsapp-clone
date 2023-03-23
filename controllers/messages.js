@@ -221,3 +221,9 @@ exports.storeLast = (req, res, next) => {
         })
     })
 }
+
+exports.postAudio = (req, res, next) => {
+    let audio = req.file;
+    let text = req.body.text;
+    console.log(audio, text);
+}

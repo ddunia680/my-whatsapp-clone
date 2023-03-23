@@ -16,4 +16,6 @@ router.post('/create_chat', messagesController.createChat);
 
 router.get('/getChats', isAuth, messagesController.getMyChats);
 
+router.post('/sendAudio', messagesController.postAudio);
+
 module.exports = router;

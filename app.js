@@ -74,6 +74,12 @@ mongoose.connect(process.env.CONNECT_STRING)
             socket.join(room);
             console.log('User ' + socket.id + ' joined room ' + room);
             socket.to(room).emit('isOnline', true);
+
+            socket.on('Imtyping', roomN => {
+                // console.log('typing...');
+                socket.to(roomN).emit('typing', roomN);
+            })
+
         }); 
 
         socket.on('disconnect', () => {

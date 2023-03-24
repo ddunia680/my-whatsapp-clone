@@ -3,7 +3,7 @@ import TopOfChats from '../../components/topOfChatsList/topOfChats';
 import SearchBar from '../../components/searchBar/searchBar';
 import MyChatItem from '../../components/chatItem/myChatItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { pullChats } from '../../store/messages';
+import { pullChats, SETTYPING } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
@@ -39,6 +39,11 @@ function LeftMenu(props) {
         if(io) {
           io.getIO().on('received-message', message => {
             dispatch(ADDLIVEMESSAGE(message));
+          });
+
+          io.getIO().on('typing', chatID => {
+            console.log('typing');
+            dispatch(SETTYPING(chatID));
           })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

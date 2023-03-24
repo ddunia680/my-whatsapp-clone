@@ -69,7 +69,7 @@ function ChatItem(props) {
             }
             <div className='flex justify-between items-center w-[79%] border-b-[1px] border-gray-500'>
                 <div className='flex flex-col justify-start items-start py-2 w-[79%]'>
-                    <h2 className='text-gray-100 text-lg'>{props.username}</h2>
+                    <h2 className='text-gray-100 text-lg overflow-x-hidden'>{props.username}</h2>
                     { props.message ? 
                     <p className="w-[100%] text-gray-500 text-sm flex flex-row">
                         <CheckIcon className='w-[1rem]'/>{props.message}</p> : 

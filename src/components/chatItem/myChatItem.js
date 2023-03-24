@@ -51,7 +51,7 @@ function MyChatItem(props) {
             <div className='flex justify-between items-center w-[79%] border-b-[1px] border-gray-500'>
                 <div className='flex flex-col justify-start items-start py-2 w-[79%]'>
                     <h2 className='text-gray-100 text-lg'>{props.username}</h2>
-                    <p className="w-[100%] text-gray-500 text-sm flex flex-row">
+                    <p className="w-[100%] h-[1rem] text-gray-500 text-sm flex flex-row truncate ...">
                         { props.sentBy.toString() === userId.toString() ? <CheckIcon className='w-[1rem]'/> : null}
                         {props.message}</p>
                 </div>

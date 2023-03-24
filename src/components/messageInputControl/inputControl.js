@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SETAUDIOUIVISIBILITY } from '../../store/uiStates';
 import { pullChats, SETCURRENTCHAT, storeLastMessage, uploadMessage } from '../../store/messages';
 import axios from 'axios';
+import io from '../../utility/socket';
 
 function InputControl(props) {
     const token = useSelector(state => state.authenticate.token);
@@ -84,7 +85,12 @@ function InputControl(props) {
             <FaceSmileIcon className=" w-[1.5rem] md:w-[2rem] text-mainTextColor"/>
             <PaperClipIcon className="w-[1.3rem] md:w-[1.5rem] text-mainTextColor" title='Attach file' onClick={() => fileInput.current.click()}/>
             <input type="file" ref={fileInput} style={{display: 'none'}} />
-            <input type='text' placeholder='Type a message' className='text-sm md:text-md w-[70%] md:w-[80%] h-[2.5rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' value={textValue} onChange={event => setTextValue(event.target.value)} onKeyDown={e => {
+            <input type='text' placeholder='Type a message' className='text-sm md:text-md w-[70%] md:w-[80%] h-[2.5rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' value={textValue} onChange={event => {
+                if(io) {
+                    io.getIO().emit('Imtyping', currentChat);
+                }
+                setTextValue(event.target.value);
+            }} onKeyDown={e => {
                 e.key === 'Enter' && sendMessageHandler()
             }}/>
             {/* <div className='w-[15rem] h-[15rem]'>

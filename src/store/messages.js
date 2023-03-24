@@ -97,7 +97,19 @@ const messagesSlice = createSlice({
             state.currentChat = action.payload;
         },
         ADDLIVEMESSAGE: (state, action) => {
-            state.messagesArray.push(action.payload);
+            let numberOfRedundant = state.messagesArray.filter(el => el._id.toString() === action.payload._id.toString());
+            if(!numberOfRedundant.length) {
+                state.messagesArray.push(action.payload);
+            }
+        },
+        SETTYPING: (state, action) => {
+            console.log('we reached here');
+            const chatIndex = state.chats.findIndex(chat => chat._id === action.payload);
+            const oldLastM = state.chats[chatIndex];
+            state.chats[chatIndex].lastMessage = 'typing';
+            setTimeout(() => {
+                state.chats[chatIndex].lastMessage = oldLastM;
+            }, 1500);
         }
     },
     extraReducers(builder) {
@@ -146,5 +158,5 @@ const messagesSlice = createSlice({
     }
 });
 
-export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE } = messagesSlice.actions;
+export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE, SETTYPING } = messagesSlice.actions;
 export default messagesSlice.reducer;

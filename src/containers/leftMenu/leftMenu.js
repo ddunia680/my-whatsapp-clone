@@ -15,8 +15,9 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
+    console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
-    const currentChat = useSelector(state => state.messages.currentChat);
+    // const currentChat = useSelector(state => state.messages.currentChat);
 
     useEffect(() => {
         const info = {
@@ -38,8 +39,9 @@ function LeftMenu(props) {
     useEffect(() => {
         if(io) {
           io.getIO().on('received-message', message => {
+            // console.log(message);
             dispatch(ADDLIVEMESSAGE(message));
-            dispatch(SETLASTMESSAGELIVE({chatId: currentChat, message: message.message}));
+            dispatch(SETLASTMESSAGELIVE({message: message, userId: userId}));
           });
 
           io.getIO().on('typing', chatID => {

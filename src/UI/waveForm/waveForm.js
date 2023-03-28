@@ -50,7 +50,7 @@ function WaveForm(props) {
             }} type="button">
             {isPlaying ? <PauseIcon className='w-[1.5rem]'/> : <PlayIcon className='w-[1.5rem]'/>}
         </button>
-        <div ref={containerRef}/>
+        <div ref={containerRef} className='w-[80%] overflow-hidden'/>
         { props.from.toString() === userId.toString() ? 
             profileUrl ?
                 <div className='w-[2rem] h-[2rem] rounded-full overflow-hidden'>

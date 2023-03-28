@@ -128,9 +128,14 @@ const messagesSlice = createSlice({
             }, 1500);
         },
         SETLASTMESSAGELIVE: (state, action) => {
-            console.log(action.payload.chatId);
-            const theChat = state.chats.findIndex(chat => chat._id === action.payload.chatId);
-            state.chats[theChat].lastMessage = action.payload.message;
+            const theChat = state.chats.findIndex(chat => chat.interlocutor._id === action.payload.message.from);
+            if(action.payload.message.from !== action.payload.userId) {
+                if(action.payload.message.message.includes('http')) {
+                    state.chats[theChat].lastMessage = 'audio message';
+                } else {
+                    state.chats[theChat].lastMessage = action.payload.message.message;
+                }
+            }
         }
     },
     extraReducers(builder) {

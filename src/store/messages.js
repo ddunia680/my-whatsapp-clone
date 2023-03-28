@@ -17,6 +17,22 @@ export const uploadMessage = createAsyncThunk(
     }
 );
 
+export const uploadAudioMessage = createAsyncThunk(
+    'data/uploadAudioM',
+    (info) => {
+        if(info.method === 'POST') {
+            return axios.post(info.url, info.data, {
+                headers: {
+                    Authorization: 'Bearer '+ info.token
+                }
+            })
+            .then(res => {
+                return res.data.message;
+            })
+        }
+    }
+)
+
 export const pullAllMessages = createAsyncThunk(
     'data/fullAllMessages',
     (info) => {
@@ -103,13 +119,18 @@ const messagesSlice = createSlice({
             }
         },
         SETTYPING: (state, action) => {
-            console.log('we reached here');
+            // console.log('we reached here');
             const chatIndex = state.chats.findIndex(chat => chat._id === action.payload);
             const oldLastM = state.chats[chatIndex];
             state.chats[chatIndex].lastMessage = 'typing';
             setTimeout(() => {
                 state.chats[chatIndex].lastMessage = oldLastM;
             }, 1500);
+        },
+        SETLASTMESSAGELIVE: (state, action) => {
+            console.log(action.payload.chatId);
+            const theChat = state.chats.findIndex(chat => chat._id === action.payload.chatId);
+            state.chats[theChat].lastMessage = action.payload.message;
         }
     },
     extraReducers(builder) {
@@ -119,6 +140,12 @@ const messagesSlice = createSlice({
             // console.log(action.payload);
         })
         .addCase(uploadMessage.rejected, (state, action) => {
+            console.log(action.error.message);
+            state.error = action.error.message;
+        })
+
+        builder
+        .addCase(uploadAudioMessage.rejected, (state, action) => {
             console.log(action.error.message);
             state.error = action.error.message;
         })
@@ -158,5 +185,5 @@ const messagesSlice = createSlice({
     }
 });
 
-export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE, SETTYPING } = messagesSlice.actions;
+export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE, SETTYPING, SETLASTMESSAGELIVE } = messagesSlice.actions;
 export default messagesSlice.reducer;

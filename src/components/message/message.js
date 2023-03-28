@@ -1,4 +1,4 @@
-// import WaveForm from '../../UI/waveForm/waveForm';
+import WaveForm from '../../UI/waveForm/waveForm';
 
 import { useSelector } from "react-redux";
 
@@ -15,10 +15,16 @@ function Message(props) {
                 props.body : 
                 <WaveForm audio={props.audio}/>
                 } */}
-                {props.message.message}
-                <div className='absolute bottom-1 right-5 text-xs text-iconsColor'>
-                    {new Date(props.message.createdAt).getHours()+':'+new Date(props.message.createdAt).getMinutes()}
-                </div>
+                { props.message.isAudio ? 
+                    <WaveForm audio={ props.message.message } from={props.message.from}/>
+                :
+                    <>
+                    {props.message.message}
+                        <div className='absolute bottom-1 right-5 text-xs text-iconsColor'>
+                            {new Date(props.message.createdAt).getHours()+':'+new Date(props.message.createdAt).getMinutes()}
+                        </div>
+                    </>
+                }
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MicrophoneIcon, PaperClipIcon, FaceSmileIcon } from '@heroicons/react/24/outline'
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,12 @@ function InputControl(props) {
     const currentChat = useSelector(state => state.messages.currentChat);
     const [textValue, setTextValue] = useState('');
     const fileInput = useRef();
+    const messageEntry = useRef();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        messageEntry.current.focus();
+    }, [currentChat]);
 
     const sendMessageHandler = () => {
         const data = {
@@ -85,7 +90,7 @@ function InputControl(props) {
             <FaceSmileIcon className=" w-[1.5rem] md:w-[2rem] text-mainTextColor"/>
             <PaperClipIcon className="w-[1.3rem] md:w-[1.5rem] text-mainTextColor" title='Attach file' onClick={() => fileInput.current.click()}/>
             <input type="file" ref={fileInput} style={{display: 'none'}} />
-            <input type='text' placeholder='Type a message' className='text-sm md:text-md w-[70%] md:w-[80%] h-[2.5rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' value={textValue} onChange={event => {
+            <input type='text' placeholder='Type a message' className='text-sm md:text-md w-[70%] md:w-[80%] h-[2.5rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' value={textValue} ref={messageEntry} onChange={event => {
                 if(io) {
                     io.getIO().emit('Imtyping', currentChat);
                 }

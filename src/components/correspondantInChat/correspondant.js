@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ChatMenu from '../chatMenu/chatMenu';
+import InterlocutorView from '../InterlocutorView/interlocutorView';
 
 import { UserCircleIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { PhoneIcon, VideoCameraIcon, EllipsisHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -17,6 +18,8 @@ function Correspondant(props) {
     const [menuIsVisible, setMenuVisibility] = useState(false);
     const [liveStatus, setLiveStatus] = useState(false);
     const [displayedLSeen, setDisplayedLSeen] = useState('');
+
+    const [showInterDetails, setInterDetailsV] = useState(false);
 
     const menuButtonClasses = ['text-iconsColor w-[3rem] p-[0.5rem]', menuIsVisible ? 'rounded-full bg-mainInput' : null];
 
@@ -78,7 +81,7 @@ function Correspondant(props) {
                         <img src={interlocutor.profileUrl} alt='profile pic' className='w-[100%] h-[100%]'/>
                     </div>
                 }
-                <div className='flex flex-col justify-start items-start py-2 w-[50%] xl:w-[70%]'>
+                <div className='flex flex-col justify-start items-start py-2 w-[50%] xl:w-[70%]' onMouseEnter={() => setInterDetailsV(true)} onMouseLeave={() => setInterDetailsV(false)}>
                     <h2 className='text-gray-100 text-md md:text-lg'>{ interlocutor ? interlocutor.username: ''}</h2>
                     <p className="text-gray-500 text-xs md:text-sm flex flex-row overflow-x-hidden">
                         { interlocutor ? !liveStatus ? !interlocutor.lastSeen ? interlocutor.status : displayedLSeen : 'online' : ''}
@@ -102,6 +105,7 @@ function Correspondant(props) {
             >
                 <ChatMenu isVisible={menuIsVisible} menuVisibility={ans => setMenuVisibility(ans)}/>
             </Transition>
+            { showInterDetails ? <InterlocutorView interlocutor={interlocutor} theState={showInterDetails}/> : null}
             
         </div>
     );

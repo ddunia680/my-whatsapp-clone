@@ -3,7 +3,7 @@ import TopOfChats from '../../components/topOfChatsList/topOfChats';
 import SearchBar from '../../components/searchBar/searchBar';
 import MyChatItem from '../../components/chatItem/myChatItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { pullChats, SETTYPING } from '../../store/messages';
+import { pullChats, SETLASTMESSAGELIVE, SETTYPING } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
@@ -16,7 +16,7 @@ function LeftMenu(props) {
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
     const userId = useSelector(state => state.authenticate.userId);
-    // const [socketConnected, setSocketConnectivity] = useState(false);
+    const currentChat = useSelector(state => state.messages.currentChat);
 
     useEffect(() => {
         const info = {
@@ -39,6 +39,7 @@ function LeftMenu(props) {
         if(io) {
           io.getIO().on('received-message', message => {
             dispatch(ADDLIVEMESSAGE(message));
+            dispatch(SETLASTMESSAGELIVE({chatId: currentChat, message: message.message}));
           });
 
           io.getIO().on('typing', chatID => {

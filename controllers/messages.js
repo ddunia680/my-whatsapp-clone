@@ -2,6 +2,8 @@ const Message = require('../models/chatMessage');
 const Chat = require('../models/chat');
 const User = require('../models/user');
 const socket = require('../socket');
+const storage = require('../firebase.config');
+const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 
 exports.getChat = (req, res, next) => {
     const userId = req.userId;
@@ -223,7 +225,70 @@ exports.storeLast = (req, res, next) => {
 }
 
 exports.postAudio = (req, res, next) => {
-    let audio = req.file;
-    let text = req.body.text;
-    console.log(audio, text);
+    const audio = req.file;
+    const from = req.userId;
+    const to = req.body.to;
+
+
+    const timestamps = Date.now();
+    // const type = audio.originalname;
+    const filename = `audio_${timestamps}.mp3`;
+
+    const audioRef = ref(storage, `audio_messages/${filename}`);
+    uploadBytes(audioRef, audio.buffer)
+        .then(snapshot => {
+            console.log('audio uploaded');
+            return getDownloadURL(snapshot.ref);
+        })
+        .then(url => {
+            const message = new Message({
+                from: from,
+                to: to,
+                isText: false,
+                isImage: false,
+                isAudio: true,
+                message: url
+            });
+
+            return message.save();
+        })
+        .then(response => {
+            let lastElementOrder;
+            Message.find()
+            .then(allMessages => {
+                const fullLength = allMessages.length;
+                if(fullLength === 1) {
+                    lastElementOrder = 0;
+                } else {
+                    lastElementOrder = allMessages[fullLength - 2].order;
+                }
+                return Message.findOneAndUpdate({_id: response._id}, {order: +(lastElementOrder + 1)});
+            })
+            .then(allresponse => {
+                // console.log(allresponse);
+                if(socket) {
+                    console.log('emiting to room' + from);
+                    // socket.getIO().on('sent-message', () => {
+                        socket.getIO().to(from).emit('received-message', allresponse);
+                    // });
+                }
+
+                return res.status(200).json({
+                    message: allresponse
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                return res.status(500).json({
+                    message: 'something went wrong server-side'
+                })
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(500).json({
+                message: 'something went wrong server-side'
+            })
+        });
+
 }

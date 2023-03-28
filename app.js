@@ -18,7 +18,7 @@ const fileFilter = (req, file, cb) => {
         file.mimetype === 'image/png' || 
         file.mimetype === 'image/jpeg' || 
         file.mimetype === 'image/jpg' ||
-        file.options.mimeType === 'audio/webm;codecs=opus'
+        file.mimetype === 'audio/mpeg'
     ) {
         cb(null, true);
     } else {
@@ -39,9 +39,9 @@ app.use(multer({fileFilter: fileFilter}).single('image'));
 app.use('/auth', authRoutes);
 app.use('/list', usersRoutes);
 app.use(messagesRoutes);
-app.use('/', (req, res) => {
-    res.send('welcome to the server');
-})
+// app.use('/', (req, res) => {
+//     res.send('welcome to the server');
+// })
 
 // console.log(process.env.CONNECT_STRING);
 mongoose.connect(process.env.CONNECT_STRING)

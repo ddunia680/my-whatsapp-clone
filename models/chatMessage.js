@@ -23,13 +23,9 @@ const chatMessageSchema = new Schema({
         type: Boolean,
         required: true
     },
-    message: {
-        type: String,
-        required: true
-    },
-    comment: {
-        type: String
-    },
+    message:  String,
+
+    comment: String,
     seen: {
         type: Boolean,
         default: false

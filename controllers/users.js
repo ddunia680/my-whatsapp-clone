@@ -113,7 +113,7 @@ exports.updateUser = (req, res, next) => {
 exports.getInterlocutor = (req, res, next) => {
     const interlID = req.params.interId;
 
-    User.findById(interlID, {username: 1, status: 1, profileUrl: 1, lastSeen: 1})
+    User.findById(interlID, {username: 1, email: 1, status: 1, profileUrl: 1, lastSeen: 1})
     .then(user => {
         if(!user) {
             return res.status(404).json({

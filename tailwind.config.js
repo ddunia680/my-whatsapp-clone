@@ -19,7 +19,8 @@ module.exports = {
         mainTextColor: "#c6edef",
         mainInput: "#2a3942",
         myMessage: "#005c4b",
-        greenSpecial: '#16a34a'
+        greenSpecial: '#16a34a',
+        specialBlue: '#0f2539'
       },
       backgroundImage: {
         'wallpaper': "url(./images/wallpaper.jpg)"

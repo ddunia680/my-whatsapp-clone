@@ -170,6 +170,7 @@ exports.getMyChats = (req, res, next) => {
 
     Chat.find({ $or: [{user1: userId}, {user2: userId }] }).populate('user1', {username: 1, status: 1, profileUrl: 1}).populate('user2', {username: 1, status: 1, profileUrl: 1})
     .then(chats => {
+        console.log(chats);
         if(chats.length === 0) {
             return res.status(200).json({
                 message: 'No chats yet',
@@ -182,7 +183,8 @@ exports.getMyChats = (req, res, next) => {
                 _id: chat._id,
                 interlocutor: chat.user1._id.toString() !== userId.toString() ? chat.user1 : chat.user2,
                 lastMessage: chat.lastMessage ? chat.lastMessage : 'no message yet',
-                sentBy: chat.sentBy
+                sentBy: chat.sentBy,
+                updatedAt: chat.updatedAt
             }
 
             chatsToSend.push(theChat);

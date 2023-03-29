@@ -94,6 +94,7 @@ exports.signUp = (req, res, next) => {
 }
 
 exports.Login = (req, res, next) => {
+    console.log('we reached here');
     const errors = validationResult(req);
     console.log(errors);
     if(!errors.isEmpty()) {

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ChatMenu from '../chatMenu/chatMenu';
 import InterlocutorView from '../InterlocutorView/interlocutorView';
 
 import { UserCircleIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
-import { PhoneIcon, VideoCameraIcon, EllipsisHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { PhoneIcon, VideoCameraIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import { Transition } from 'react-transition-group';
 import { SETAUDIOCALL, SETVIDEOCALL } from '../../store/uiStates';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -15,13 +13,10 @@ function Correspondant(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const interlocutor = useSelector(state => state.users.interlocutor);
-    const [menuIsVisible, setMenuVisibility] = useState(false);
     const [liveStatus, setLiveStatus] = useState(false);
     const [displayedLSeen, setDisplayedLSeen] = useState('');
 
     const [showInterDetails, setInterDetailsV] = useState(false);
-
-    const menuButtonClasses = ['text-iconsColor w-[3rem] p-[0.5rem]', menuIsVisible ? 'rounded-full bg-mainInput' : null];
 
     const audioCallHandler = () => {
         if(window.innerWidth <= 500) {
@@ -90,21 +85,12 @@ function Correspondant(props) {
             </div>
 
             <div className=' w-[50%] md:w-[25%] xl:w-[15%] flex justify-around items-center text-iconsColor text-md md:text-lg'>
-                <VideoCameraIcon title='video call' className='w-[1.3rem]' onClick={videoCallHandler}/>
-                <PhoneIcon title='audio call' className='w-[1.3rem]' onClick={audioCallHandler}/>
+                <VideoCameraIcon title='video call' className='w-[1rem]' onClick={videoCallHandler}/>
+                <PhoneIcon title='audio call' className='w-[1rem]' onClick={audioCallHandler}/>
             </div>
             <div className='hidden w-[25%] xl:w-[15%] md:flex justify-around items-center border-l-[1px] border-iconsColor'>
-                <MagnifyingGlassIcon className="text-iconsColor w-[1.3rem]" title='search message' onClick={() => props.setShowSearch(true)}/>
-                <EllipsisHorizontalIcon className={menuButtonClasses.join(' ')} title='menu' onClick={() => setMenuVisibility(!menuIsVisible)}/>
+                <MagnifyingGlassIcon className="text-iconsColor w-[1rem] rotate-90" title='search message' onClick={() => props.setShowSearch(true)}/>
             </div>
-            <Transition
-                in={menuIsVisible}
-                timeout={300}
-                mountOnEnter
-                unmountOnExit
-            >
-                <ChatMenu isVisible={menuIsVisible} menuVisibility={ans => setMenuVisibility(ans)}/>
-            </Transition>
             { showInterDetails ? <InterlocutorView interlocutor={interlocutor} theState={showInterDetails}/> : null}
             
         </div>

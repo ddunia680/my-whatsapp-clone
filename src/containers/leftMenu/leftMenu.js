@@ -63,15 +63,16 @@ function LeftMenu(props) {
                         profile={singleChat.interlocutor.profileUrl}
                         message={singleChat.lastMessage}
                         sentBy={singleChat.sentBy}
+                        updatedAt={singleChat.updatedAt}
                         chatId={singleChat._id}
                         key={singleChat._id}
                     />
         })
-    } else if(!myChats.length) {
-        chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
-    }
-    else if(chatsLoadingState === 'failed') {
+    
+    }else if(chatsLoadingState === 'failed') {
         chats = <p className='text-iconsColor text-sm mx-auto'>Chats couldn't be loaded...</p>
+    }else if(!myChats.length) {
+        chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
     }
     
     return (

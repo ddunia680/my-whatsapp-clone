@@ -55,7 +55,15 @@ function MyChatItem(props) {
                         { props.sentBy.toString() === userId.toString() ? <CheckIcon className='w-[1rem]'/> : null}
                         {props.message}</p>
                 </div>
-                { props.message ? <UnreadMessage number='202'/> : null }
+                <div className='flex flex-col justify-between items-center h-[100%] w-[30%] p-3'>
+                    <p className='text-[10px] text-iconsColor'>
+                        { new Date(props.updatedAt).getDay() === new Date().getDay() ? new Date(props.updatedAt).getHours()+':'+ new Date(props.updatedAt).getMinutes() : 
+                            new Date(props.updatedAt).getDate()+'/'+new Date(props.updatedAt).getMonth()+'/'+new Date(props.updatedAt).getFullYear()
+                        }
+                    </p>
+                    { props.message ? <UnreadMessage number='20'/> : null }
+                </div>
+                
             </div>
             
         </div>

@@ -15,7 +15,7 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
-    console.log(myChats);
+    // console.log(myChats.length);
     const userId = useSelector(state => state.authenticate.userId);
     // const currentChat = useSelector(state => state.messages.currentChat);
 
@@ -56,7 +56,11 @@ function LeftMenu(props) {
     if(chatsLoadingState === 'loading') {
         chats = <div className='mx-auto'><Spinner/></div>
     } else if(chatsLoadingState === 'succeeded') {
-        chats = myChats.map(singleChat => {
+        if(myChats.length === 0) {
+            chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
+            alert('welcome!!! click the chat icon on top of your screen to start a chat with a user');
+        } else {
+            chats = myChats.map(singleChat => {
             return <MyChatItem 
                         inter={singleChat.interlocutor}
                         username={singleChat.interlocutor.username}
@@ -67,12 +71,12 @@ function LeftMenu(props) {
                         chatId={singleChat._id}
                         key={singleChat._id}
                     />
-        })
+            })
+        }
+        
     
-    }else if(chatsLoadingState === 'failed') {
+    } else if(chatsLoadingState === 'failed') {
         chats = <p className='text-iconsColor text-sm mx-auto'>Chats couldn't be loaded...</p>
-    }else if(!myChats.length) {
-        chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
     }
     
     return (

@@ -16,7 +16,7 @@ function InterlocutorView(props) {
             }
             <h1 className='text-2xl font-semibold'>{props.interlocutor.username}</h1>
             <h4 className='text-slate-500 text-sm'>{props.interlocutor.email}</h4>
-            <div className='w-[90%] bg-mainInput rounded-lg px-4 flex flex-col justify-start text-sm py-[2px]'>
+            <div className='w-[90%] bg-darkSpecial rounded-lg px-4 flex flex-col justify-start text-sm py-[2px]'>
                 <p>{props.interlocutor.status}</p>
                 <p className='text-gray-500'>Joined on 12 june 2022</p>
             </div>

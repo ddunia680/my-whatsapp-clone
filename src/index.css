@@ -11,6 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
     /* background-color: #146514 */
+    /* color: #1c262c */
 }
 
 @tailwind base;

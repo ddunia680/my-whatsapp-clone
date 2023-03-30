@@ -6,6 +6,7 @@ import { SETAUDIOUIVISIBILITY } from '../../store/uiStates';
 import { pullChats, SETCURRENTCHAT, storeLastMessage, uploadMessage } from '../../store/messages';
 import axios from 'axios';
 import io from '../../utility/socket';
+import Spinner from '../../UI/spinner/spinner';
 import docIcon from '../../images/docIcon.png';
 
 function InputControl(props) {
@@ -15,6 +16,8 @@ function InputControl(props) {
     const currentChat = useSelector(state => state.messages.currentChat);
     const [textValue, setTextValue] = useState('');
     const [inputedFile, setInputedFile] = useState();
+    const [caption, setCaption] = useState('');
+    const [loading, setLoading] = useState(false);
     const fileInput = useRef();
     const messageEntry = useRef();
     const dispatch = useDispatch();
@@ -24,13 +27,24 @@ function InputControl(props) {
     }, [currentChat]);
 
     const sendMessageHandler = () => {
-        const data = {
-            to: interlocutor._id,
-            isText: true,
-            isImage: false,
-            isAudio: false,
-            message: textValue 
+        setLoading(true);
+        let data;
+        if(inputedFile) {
+            data = new FormData();
+            data.append('to', interlocutor._id);
+            data.append('image', inputedFile);
+            if(caption.trim()) {
+                data.append('comment', caption);
+            }
+        } else {
+            data = {
+                to: interlocutor._id,
+                isText: true,
+                isAudio: false,
+                message: textValue 
+            }
         }
+        
         const info = {
             method: 'POST',
             url: `${process.env.REACT_APP_BACKEND_URL}message`,
@@ -46,7 +60,7 @@ function InputControl(props) {
                     url: `${process.env.REACT_APP_BACKEND_URL}storeLastMessage`,
                     data: {
                         currentChat: currentChat,
-                        message: textValue,
+                        message: inputedFile ? 'file attached' : textValue,
                         sentBy: userId
                     },
                     token: token
@@ -83,12 +97,12 @@ function InputControl(props) {
             }
         })
         setTextValue('');
+        setLoading(false);
+        setInputedFile(null);
+        setCaption('');
         
     }
 
-    const sendFileMessageHandler = () => {
-        console.log('this will be sent');
-    }
 
     return (
         <div className='absolute md:relative bottom-0 left-0 w-[100%] bg-primary flex justify-start items-center px-2 md:px-5 space-x-[1rem] md:space-x-[2rem] py-[0.7rem]'>
@@ -116,18 +130,22 @@ function InputControl(props) {
 
             {/* File input view */}
             { inputedFile ?
-            <div className='absolute bottom-3 w-[85%] md:w-[90%] h-[30vh] left-7 bg-primary rounded-lg flex justify-between items-center px-[3%] md:px-[10%] z-10'>
-                <div className=' relative w-[70%] h-[85%] bg-mainInput rounded-xl overflow-hidden'>
-                    <h5 className='absolute top-2 z-20 text-center ml-[10%] text-sm md:text-md font-semibold text-specialBlue'>{inputedFile.name}</h5>
-                    { inputedFile.type.includes('application') ?
-                        <img src={docIcon} alt='' className='rounded-xl h-[100%] w-[100%]'/> 
-                    :
-                        <img src={URL.createObjectURL(inputedFile)} alt='' className='h-[100%]'/>
-                    }
-                    <XCircleIcon className='absolute bottom-1 right-1 w-[2rem] text-red-600' title='click to send' onClick={() => setInputedFile(null)}/>
+            <div className='absolute bottom-3 w-[85%] md:w-[90%] h-[40vh] left-7 bg-primary rounded-lg flex justify-between items-center px-[3%] md:px-[10%] z-10'>
+                <div className='w-[70%] h-[85%] rounded-xl overflow-hidden flex flex-col justify-between'>
+                    <div className=' relative w-[100%] h-[80%] bg-mainInput rounded-xl overflow-hidden'>
+                        <h5 className='absolute top-2 z-20 text-center ml-[10%] text-sm md:text-md font-semibold text-specialBlue'>{inputedFile.name}</h5>
+                        { inputedFile.type.includes('application') ?
+                            <img src={docIcon} alt='' className='rounded-xl h-[100%] w-[100%]'/> 
+                        :
+                            <img src={URL.createObjectURL(inputedFile)} alt='' className='h-[100%]'/>
+                        }
+                        <XCircleIcon className='absolute bottom-1 right-1 w-[1.5rem] md:w-[2rem] text-red-600' title='click to send' onClick={() => setInputedFile(null)}/>
+                    </div>
+
+                    <input type='text' placeholder='Add a caption' className='text-sm md:text-md w-[100%] h-[1.7rem] md:h-[2rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' onChange={e => setCaption(e.target.value)} value={caption}/>
                 </div>
-                <div className=' w-[3rem] h-[3rem] md:w-[5rem] md:h-[5rem] bg-green-600 p-3 md:p-5 rounded-full shadow-sm md:shadow-lg shadow-green-500' onClick={sendFileMessageHandler}>
-                    <PaperAirplaneIcon/>
+                <div className=' w-[3rem] h-[3rem] md:w-[5rem] md:h-[5rem] bg-green-600 p-3 md:p-5 rounded-full shadow-sm md:shadow-lg shadow-green-500' onClick={sendMessageHandler}>
+                    { loading ? <Spinner/> : <PaperAirplaneIcon/>}
                 </div>
             </div>
             : null}

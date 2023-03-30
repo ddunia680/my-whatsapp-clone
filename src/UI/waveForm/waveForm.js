@@ -12,7 +12,9 @@ function WaveForm(props) {
     const userId = useSelector(state => state.authenticate.userId);
     const profileUrl = useSelector(state => state.authenticate.profileUrl);
     const interlocutor = useSelector(state => state.users.interlocutor);
-    // console.log(waveSurferRef.current);
+
+    const [currentTime, setCurrentTime] = useState('');
+    const [fullTime, setFullTime] = useState('')
 
     useEffect(() => {
         const waveSurfer = Wavesurfer.create({
@@ -31,9 +33,17 @@ function WaveForm(props) {
                 window.innerWidth >= 1100 && window.innerWidth < 1400? 80 :
                 window.innerWidth > 1400 && window.innerWidth < 1600? 120 : 130 
         });
+        // console.log(waveSurfer.getDuration());
         waveSurfer.load(props.audio)
         waveSurfer.on('ready', () => {
             waveSurferRef.current = waveSurfer
+        });
+
+        waveSurfer.on('audioprocess', () => {
+            let currentTimeL = Math.floor(waveSurfer.getCurrentTime()) < 60 ? '0:'+ Math.floor(waveSurfer.getCurrentTime()) : Math.floor(waveSurfer.getCurrentTime()) / 60 +':'+Math.floor(waveSurfer.getCurrentTime()) % 60;
+            let fullTimeL = Math.floor(waveSurfer.getDuration()) < 60 ? '0:'+ Math.floor(waveSurfer.getDuration()) : Math.floor(waveSurfer.getDuration()) / 60 +':'+Math.floor(waveSurfer.getDuration()) % 60;
+            setCurrentTime(currentTimeL);
+            setFullTime(fullTimeL);
         })
 
         return () => {
@@ -50,7 +60,15 @@ function WaveForm(props) {
             }} type="button">
             {isPlaying ? <PauseIcon className='w-[1.5rem]'/> : <PlayIcon className='w-[1.5rem]'/>}
         </button>
-        <div ref={containerRef} className='w-[80%] overflow-hidden z-0'/>
+        <div className='w-[80%] flex flex-col justify-start items-start overflow-hidden'>
+            <div ref={containerRef} className='w-[100%] h-[85%] overflow-hidden z-0'/>
+            <div className='w-[100%] flex justify-between items-center'>
+                <p className='text-[10px] md:text-xs text-iconsColor'>{currentTime}/{fullTime}</p>
+                <p className='text-[10px] md:text-xs text-iconsColor'>
+                    {new Date(props.createdAt).getHours()+':'+new Date(props.createdAt).getMinutes()}
+                </p>
+            </div>
+        </div>
         { props.from.toString() === userId.toString() ? 
             profileUrl ?
                 <div className='w-[2rem] h-[2rem] rounded-full overflow-hidden'>

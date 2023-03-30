@@ -20,7 +20,8 @@ module.exports = {
         mainInput: "#2a3942",
         myMessage: "#005c4b",
         greenSpecial: '#16a34a',
-        specialBlue: '#0f2539'
+        specialBlue: '#0f2539',
+        currentChat: '#1c262c'
       },
       backgroundImage: {
         'wallpaper': "url(./images/wallpaper.jpg)"

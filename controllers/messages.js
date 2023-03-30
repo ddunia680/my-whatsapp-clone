@@ -51,59 +51,117 @@ exports.getChat = (req, res, next) => {
 exports.postAMessage = (req, res, next) => {
     const from = req.userId;
     const to = req.body.to;
-    const isText = req.body.isText;
-    const isImage = req.body.isImage;
-    const isAudio = req.body.isAudio;
-    const comment = req.body.comment;
-    const message = req.body.message;
+    const file = req.file;
+    const isText = req.body.isText ? req.body.isText : false;
+    const isAudio = req.body.isAudio ? req.body.isAudio : false;
+    const comment = req.body.comment ? req.body.comment : null;
+    const message = req.body.message ? req.body.message : null;
 
     let chatMessage;
-    if(comment) {
-        chatMessage = new Message({
-            from: from,
-            to: to,
-            isText: isText,
-            isImage: isImage,
-            isAudio: isAudio,
-            message: message,
-            comment: comment
-        });
+    if(file) {
+        const timestamps = Date.now();
+        const nm = file.originalname.split('.')[0];
+        const type = file.originalname.split('.')[1];
+        const filename = `${nm}_${timestamps}.${type}`;
+
+        const imageRef = ref(storage, `sharedFiles/${filename}`);
+        uploadBytes(imageRef, file.buffer)
+        .then(snapshot => {
+            console.log('file added');
+            return getDownloadURL(snapshot.ref);
+        })
+        .then(url => {
+            chatMessage = new Message({
+                from: from,
+                to: to,
+                isText: isText,
+                isImage: true,
+                isAudio: isAudio,
+                message: url,
+                comment: comment
+            });
+            chatMessage.save()
+            .then(response => {
+                let lastElementOrder;
+                Message.find()
+                .then(allMessages => {
+                    const fullLength = allMessages.length;
+                    if(fullLength === 1) {
+                        lastElementOrder = 0;
+                    } else {
+                        lastElementOrder = allMessages[fullLength - 2].order;
+                    }
+                    return Message.findOneAndUpdate({_id: response._id}, {order: +(lastElementOrder + 1)});
+                })
+                .then(allresponse => {
+                    // console.log(allresponse);
+                    if(socket) {
+                        console.log('emiting to room' + from);
+                        // socket.getIO().on('sent-message', () => {
+                            socket.getIO().to(from).emit('received-message', allresponse);
+                        // });
+                    }
+
+                    return res.status(200).json({
+                        message: allresponse
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    return res.status(500).json({
+                        message: 'something went wrong server-side'
+                    })
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                return res.status(500).json({
+                    message: 'something went wrong server-side'
+                })
+            });
+    })
+        
     } else {
         chatMessage = new Message({
             from: from,
             to: to,
             isText: isText,
-            isImage: isImage,
+            isImage: false,
             isAudio: isAudio,
             message: message,
         });
-    }
-
-    chatMessage.save()
-    .then(response => {
-        let lastElementOrder;
-        Message.find()
-        .then(allMessages => {
-            const fullLength = allMessages.length;
-            if(fullLength === 1) {
-                lastElementOrder = 0;
-            } else {
-                lastElementOrder = allMessages[fullLength - 2].order;
-            }
-            return Message.findOneAndUpdate({_id: response._id}, {order: +(lastElementOrder + 1)});
-        })
-        .then(allresponse => {
-            // console.log(allresponse);
-            if(socket) {
-                console.log('emiting to room' + from);
-                // socket.getIO().on('sent-message', () => {
-                    socket.getIO().to(from).emit('received-message', allresponse);
-                // });
-            }
-
-            return res.status(200).json({
-                message: allresponse
+        chatMessage.save()
+        .then(response => {
+            let lastElementOrder;
+            Message.find()
+            .then(allMessages => {
+                const fullLength = allMessages.length;
+                if(fullLength === 1) {
+                    lastElementOrder = 0;
+                } else {
+                    lastElementOrder = allMessages[fullLength - 2].order;
+                }
+                return Message.findOneAndUpdate({_id: response._id}, {order: +(lastElementOrder + 1)});
             })
+            .then(allresponse => {
+                // console.log(allresponse);
+                if(socket) {
+                    console.log('emiting to room' + from);
+                    // socket.getIO().on('sent-message', () => {
+                        socket.getIO().to(from).emit('received-message', allresponse);
+                    // });
+                }
+
+                return res.status(200).json({
+                    message: allresponse
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                return res.status(500).json({
+                    message: 'something went wrong server-side'
+                })
+            });
         })
         .catch(err => {
             console.log(err);
@@ -111,14 +169,7 @@ exports.postAMessage = (req, res, next) => {
                 message: 'something went wrong server-side'
             })
         });
-    })
-    .catch(err => {
-        console.log(err);
-        return res.status(500).json({
-            message: 'something went wrong server-side'
-        })
-    });
-    
+    }
 }
 
 exports.findChat = (req, res, next) => {
@@ -170,7 +221,7 @@ exports.getMyChats = (req, res, next) => {
 
     Chat.find({ $or: [{user1: userId}, {user2: userId }] }).populate('user1', {username: 1, status: 1, profileUrl: 1}).populate('user2', {username: 1, status: 1, profileUrl: 1})
     .then(chats => {
-        console.log(chats);
+        // console.log(chats);
         if(chats.length === 0) {
             return res.status(200).json({
                 message: 'No chats yet',

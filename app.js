@@ -18,7 +18,8 @@ const fileFilter = (req, file, cb) => {
         file.mimetype === 'image/png' || 
         file.mimetype === 'image/jpeg' || 
         file.mimetype === 'image/jpg' ||
-        file.mimetype === 'audio/mpeg'
+        file.mimetype === 'audio/mpeg' || 
+        file.mimetype === 'application/pdf'
     ) {
         cb(null, true);
     } else {

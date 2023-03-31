@@ -1,15 +1,33 @@
 import WaveForm from '../../UI/waveForm/waveForm';
 import { ArrowDownCircleIcon } from '@heroicons/react/24/solid';
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateSeen } from '../../store/messages';
 import pdfFile from '../../images/pdfFile.png';
+import { useEffect } from 'react';
 
 function Message(props) {
     const userId = useSelector(state => state.authenticate.userId);
+    const dispatch = useDispatch();
 
     const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-bl-none";
 
     const myMessageClasses = 'relative ml-[30%] md:ml-[59%] bg-myMessage text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-br-none';
+
+    useEffect(() => {
+        if(props.message) {
+            if(props.message.from.toString() !== userId.toString()) {
+                if(props.message.seen === false) {
+                    let info = {
+                        url: `${process.env.REACT_APP_BACKEND_URL}updateSeen/${props.message._id}`,
+                    }
+
+                dispatch(updateSeen(info));
+                }
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className={props.message.from.valueOf() !== userId.toString() ? interlocutorMessageClasses : myMessageClasses}>

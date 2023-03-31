@@ -15,7 +15,7 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
-    // console.log(myChats.length);
+    // console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
     // const currentChat = useSelector(state => state.messages.currentChat);
 
@@ -63,6 +63,7 @@ function LeftMenu(props) {
             chats = myChats.map(singleChat => {
             return <MyChatItem 
                         inter={singleChat.interlocutor}
+                        interId={singleChat.interlocutor._id}
                         username={singleChat.interlocutor.username}
                         profile={singleChat.interlocutor.profileUrl}
                         message={singleChat.lastMessage}

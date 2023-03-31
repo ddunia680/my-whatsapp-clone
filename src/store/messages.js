@@ -93,6 +93,17 @@ export const storeLastMessage = createAsyncThunk(
             return res.data;
         })
     }
+);
+
+export const updateSeen = createAsyncThunk(
+    'data/updateSeen',
+    (info) => {
+        // console.log(info);
+        return axios.post(info.url)
+        .then(res => {
+            return res.data;
+        })
+    }
 )
 
 const messagesSlice = createSlice({
@@ -136,6 +147,7 @@ const messagesSlice = createSlice({
                     state.chats[theChat].lastMessage = action.payload.message.message;
                 }
             }
+            state.chats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
         }
     },
     extraReducers(builder) {
@@ -181,7 +193,9 @@ const messagesSlice = createSlice({
         })
         .addCase(pullChats.fulfilled, (state, action) => {
             state.chatsLoadingState = 'succeeded';
-            state.chats = action.payload;
+            let theChats = action.payload;
+            theChats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+            state.chats = theChats;
         })
         .addCase(pullChats.rejected, (state, action) => {
             state.chatsLoadingState = 'failed';

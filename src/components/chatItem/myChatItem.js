@@ -1,6 +1,6 @@
 import { UserCircleIcon, CheckIcon } from '@heroicons/react/24/solid';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { SETNEWCHATUIVISIBILITY, SETSHOWWELCOMEVIEW } from '../../store/uiStates';
@@ -8,14 +8,17 @@ import { SETCURRENTCHAT } from '../../store/messages';
 import { SETINTERLOCUTORLOCALLY } from '../../store/users';
 import UnreadMessage from '../../UI/unreadMessage/unreadMessage';
 import io from '../../utility/socket';
+import axios from 'axios';
 
 function MyChatItem(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
+    const token = useSelector(state => state.authenticate.token);
     const userId = useSelector(state => state.authenticate.userId);
     const interlocutor = useSelector(state => state.users.interlocutor);
     const currentChat = useSelector(state => state.messages.currentChat);
+    const [unseenNumber, setUnseenNumber] = useState(0);
 
     const days = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
     const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -35,8 +38,20 @@ function MyChatItem(props) {
                 console.log('Data for chat should be fetched');
             } 
         }
-        
+        setUnseenNumber(0);        
     }
+
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}unSeen/${props.interId}`, {
+            headers: {
+                Authorization: 'Bearer '+ token
+            }
+        })
+        .then(res => {
+            setUnseenNumber(res.data.number);
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if(interlocutor) {
@@ -68,7 +83,9 @@ function MyChatItem(props) {
                             new Date(props.updatedAt).getDate()+'/'+ months[+new Date(props.updatedAt).getMonth()]+'/'+new Date(props.updatedAt).getFullYear()
                         }
                     </p>
-                    { props.message ? <UnreadMessage number='20'/> : null }
+                    { unseenNumber ? 
+                        <UnreadMessage number={unseenNumber}/> : 
+                        <div className='text-darkSpecial'>p</div> }
                 </div>
                 
             </div>

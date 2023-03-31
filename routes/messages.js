@@ -18,4 +18,8 @@ router.get('/getChats', isAuth, messagesController.getMyChats);
 
 router.post('/sendAudio', isAuth, messagesController.postAudio);
 
+router.post('/updateSeen/:messageId', messagesController.updateSeen);
+
+router.get('/unSeen/:interlocutor', isAuth, messagesController.getUnseenMessages);
+
 module.exports = router;

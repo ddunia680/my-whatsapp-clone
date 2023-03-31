@@ -48,6 +48,26 @@ exports.getChat = (req, res, next) => {
     })
 }
 
+exports.getUnseenMessages = (req, res, next) => {
+    const userId = req.userId;
+    const interId = req.params.interlocutor;
+
+    Message.find({from: interId, to: userId, seen: false}).count()
+    .then(response => {
+        res.status(200).json({
+            number: response
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: 'something went wrong server-side'
+        })
+    })
+
+
+}
+
 exports.postAMessage = (req, res, next) => {
     const from = req.userId;
     const to = req.body.to;
@@ -343,5 +363,28 @@ exports.postAudio = (req, res, next) => {
                 message: 'something went wrong server-side'
             })
         });
+}
 
+exports.updateSeen = (req, res, next) => {
+    const messageId = req.params.messageId;
+    const userId = req.userId;
+
+    Message.findById(messageId)
+    .then(message => {
+        message.seen = true;
+
+        return message.save();
+    })
+    .then(response => {
+        res.status(201).json({
+            message: 'message seen',
+            messageId: response._id
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: 'Oops, something went wrong server-side'
+        })
+    })
 }

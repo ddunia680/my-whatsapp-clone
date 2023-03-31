@@ -8,6 +8,8 @@ import axios from 'axios';
 import io from '../../utility/socket';
 import Spinner from '../../UI/spinner/spinner';
 import docIcon from '../../images/docIcon.png';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 function InputControl(props) {
     const token = useSelector(state => state.authenticate.token);
@@ -21,6 +23,8 @@ function InputControl(props) {
     const fileInput = useRef();
     const messageEntry = useRef();
     const dispatch = useDispatch();
+
+    const [isPickedVisible, setIsPickerVisible] = useState(false);
 
     useEffect(() => {
         messageEntry.current.focus();
@@ -106,7 +110,18 @@ function InputControl(props) {
 
     return (
         <div className='absolute md:relative bottom-0 left-0 w-[100%] bg-primary flex justify-start items-center px-2 md:px-5 space-x-[1rem] md:space-x-[2rem] py-[0.7rem]'>
-            <FaceSmileIcon className=" w-[1.5rem] md:w-[2rem] text-mainTextColor"/>
+            {/* Emoji picker toggle button */}
+            <FaceSmileIcon className={isPickedVisible ? 'w-[1.5rem] md:w-[2rem] text-greenSpecial' : 'w-[1.5rem] md:w-[2rem] text-mainTextColor'} onClick={() => setIsPickerVisible(!isPickedVisible)} title='Click to toggle the emojis'/>
+
+            { isPickedVisible ? 
+                <div className='absolute bottom-[14vh] md:bottom-[9vh] w-[80%] md:w-auto left-0 md:left-1 h-[50vh] md:h-[30vh] bg-primary overflow-scroll rounded-lg'>
+                    <Picker data={data} theme='dark' previewPosition='none' onEmojiSelect={e => {
+                        setTextValue(textValue + e.native);
+                        setIsPickerVisible(!isPickedVisible);
+                    }} />
+                </div> 
+            : null}
+
             <PaperClipIcon className="w-[1.3rem] md:w-[1.5rem] text-mainTextColor" title='Attach file' onClick={() => fileInput.current.click()}/>
             <input type="file" accept='image/*, application/*' ref={fileInput} style={{display: 'none'}} onChange={e => {
                 setInputedFile(e.target.files[0]);

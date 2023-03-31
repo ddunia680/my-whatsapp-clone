@@ -36,14 +36,14 @@ function WaveForm(props) {
         // console.log(waveSurfer.getDuration());
         waveSurfer.load(props.audio)
         waveSurfer.on('ready', () => {
-            waveSurferRef.current = waveSurfer
+            waveSurferRef.current = waveSurfer;
+            console.log(Math.floor(waveSurfer.getDuration()).toString().length);
+            setFullTime( Math.floor(waveSurfer.getDuration()) < 60 ? Math.floor(waveSurfer.getDuration()).toString().length > 1 ? '0:'+ Math.floor(waveSurfer.getDuration()) : '0:0'+ Math.floor(waveSurfer.getDuration()) : Math.floor(waveSurfer.getDuration()) / 60 +':'+Math.floor(waveSurfer.getDuration()) % 60);
         });
 
         waveSurfer.on('audioprocess', () => {
-            let currentTimeL = Math.floor(waveSurfer.getCurrentTime()) < 60 ? '0:'+ Math.floor(waveSurfer.getCurrentTime()) : Math.floor(waveSurfer.getCurrentTime()) / 60 +':'+Math.floor(waveSurfer.getCurrentTime()) % 60;
-            let fullTimeL = Math.floor(waveSurfer.getDuration()) < 60 ? '0:'+ Math.floor(waveSurfer.getDuration()) : Math.floor(waveSurfer.getDuration()) / 60 +':'+Math.floor(waveSurfer.getDuration()) % 60;
+            let currentTimeL = Math.floor(waveSurfer.getCurrentTime()) < 60 ? '0:0'+ Math.floor(waveSurfer.getCurrentTime()) : Math.floor(waveSurfer.getCurrentTime()) / 60 +':'+Math.floor(waveSurfer.getCurrentTime()) % 60;
             setCurrentTime(currentTimeL);
-            setFullTime(fullTimeL);
         })
 
         return () => {

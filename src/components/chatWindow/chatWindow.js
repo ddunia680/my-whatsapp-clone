@@ -5,7 +5,7 @@ import './chatWindow.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { pullAllMessages } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
-
+import { Helmet } from 'react-helmet';
 
 function ChatWindow(props) {
     const dispatch = useDispatch();
@@ -51,6 +51,9 @@ function ChatWindow(props) {
 
     return (
         <div ref={chatWindowUI} className='relative w-[100%] px-3 mt-[3.5rem] md:mt-0 mb-[3.5rem] md:mb-0 h-[100%] md:h-[85%] bg-wallpaper overflow-y-scroll chatWindow'>
+            <Helmet>
+                <meta meta name="viewport" content=" width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+            </Helmet>
             {chatMessages}
             <div ref={bottomDiv}/>  
         </div>

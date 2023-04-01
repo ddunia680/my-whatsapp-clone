@@ -8,6 +8,7 @@ import soundWave from '../../gifs/sound.json';
 import Lottie from 'lottie-react';
 import vmsg from 'vmsg';
 import axios from 'axios';
+import io from '../../utility/socket';
 
 const recorder = new vmsg.Recorder({
     wasmURL: 'https://unpkg.com/vmsg@0.3.0/vmsg.wasm'
@@ -42,7 +43,16 @@ function AudioRecording(props) {
             }
             
         }
-      }
+    }
+
+    useEffect(() => {
+        if(io) {
+            if(recording) {
+                io.getIO().emit('recording', {chat: currentChat, to: interlocutor._id });
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [recording]);
 
     useEffect(() => {
         if(recordingUI) {
@@ -71,6 +81,9 @@ function AudioRecording(props) {
             }
             dispatch(uploadAudioMessage(info))
             .then(res => {
+                if(io) {
+                    io.getIO().emit('sent message', res.payload);
+                }
                 if(currentChat) {
                     console.log("currentChat was already set");
                     const localInfo = {

@@ -39,14 +39,14 @@ function Message(props) {
                     <div className=' relative w-[100%] h-[100%] flex flex-col justify-start items-start'>
                         { props.message.message.includes('pdf') ?
                             <div className=' relative w-[100%] h-[5rem] rounded-lg overflow-hidden bg-slate-100'>
-                                <img src={pdfFile} alt='' className='w-[80%] h-[100%]'/>
+                                <img src={pdfFile} alt='' className='w-[100%] h-[100%] object-contain'/>
                                 <a href={props.message.message}>
                                     <ArrowDownCircleIcon className=' absolute right-1 bottom-1 w-[2rem] text-red-700 hover:text-red-900' title='click to download'/>
                                 </a>
                             </div>
                         :
                             <div className=' relative w-[100%] h-[10rem] rounded-lg overflow-hidden bg-primary'>
-                                <img src={props.message.message} alt='' className='w-[100%]'/>
+                                <img src={props.message.message} alt='' className='w-[100%] h-[100%] object-contain'/>
                                 <a href={props.message.message}>
                                     <ArrowDownCircleIcon className=' absolute right-1 bottom-1 w-[2rem] text-red-700 hover:text-red-900' title='click to download'/>
                                 </a>

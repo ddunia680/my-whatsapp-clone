@@ -58,6 +58,9 @@ function InputControl(props) {
 
         dispatch(uploadMessage(info))
         .then(res => {
+            if(io) {
+                io.getIO().emit('sent message', res.payload);
+            }
             if(currentChat) {
                 console.log("currentChat was already set");
                 const localInfo = {
@@ -128,7 +131,7 @@ function InputControl(props) {
             }}/>
             <input type='text' placeholder='Type a message' className='text-sm md:text-md w-[70%] md:w-[80%] h-[2.5rem] bg-mainInput outline-none focus:text-mainTextColor rounded-lg px-5 py-2 overflow-y-wrap' value={textValue} ref={messageEntry} onChange={event => {
                 if(io) {
-                    io.getIO().emit('Imtyping', currentChat);
+                    io.getIO().emit('typing', {chat: currentChat, to: interlocutor._id});
                 }
                 setTextValue(event.target.value);
             }} onKeyDown={e => {

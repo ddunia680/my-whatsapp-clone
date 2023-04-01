@@ -19,6 +19,7 @@ function MyChatItem(props) {
     const interlocutor = useSelector(state => state.users.interlocutor);
     const currentChat = useSelector(state => state.messages.currentChat);
     const [unseenNumber, setUnseenNumber] = useState(0);
+    const [typing, setTyping] = useState('');
 
     const days = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
     const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
@@ -60,21 +61,55 @@ function MyChatItem(props) {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [interlocutor]);
+
+    useEffect(() => {
+        if(io) {
+            io.getIO().on('isTyping', chatId => {
+                if(props.chatId.toString() === chatId.toString()) {
+                    setTyping('typing...');
+                }
+            });
+
+            io.getIO().on('isRecording', chatId => {
+                if(props.chatId.toString() === chatId.toString()) {
+                    setTyping('recording...');
+                }
+            })
+        }
+    });
+
+    useEffect(() => {
+        if(typing) {
+            setTimeout(() => {
+                setTyping('');
+            }, 1000)
+        }
+    }, [typing]);
     
     return (
         <div className={chatItemClasses.join(' ')} onClick={() => openChat()}>
+            {/* User profile */}
             { !props.profile ? 
             <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
-            <div className='ml-5 md:ml-0 w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
+            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
                 <img src={props.profile} alt='the profile' className='w-[100%] h-[100%]'/>
             </div>
             }
+            {/* User name & last message */}
             <div className='flex justify-between items-center w-[79%] border-b-[1px] border-gray-500'>
                 <div className='flex flex-col justify-start items-start py-2 w-[79%]'>
                     <h2 className='text-gray-100 text-lg'>{props.username}</h2>
-                    <p className="w-[100%] h-[1rem] text-gray-500 text-sm flex flex-row truncate ...">
-                        { props.sentBy.toString() === userId.toString() ? <CheckIcon className='w-[1rem]'/> : null}
-                        {props.message}</p>
+                    { typing ?
+                        <p className='w-[100%] h-[1rem] text-greenSpecial text-sm'>
+                            <i>{typing}</i>
+                        </p>
+                    :
+                        <p className="w-[100%] h-[1rem] text-gray-500 text-sm flex flex-row truncate ...">
+                            { props.sentBy.toString() === userId.toString() ? <CheckIcon className='w-[1rem]'/> : null}
+                            {props.message}
+                        </p>
+                    }
+                    
                 </div>
                 <div className='flex flex-col justify-between items-center h-[100%] w-[30%]'>
                     <p className='text-[10px] text-iconsColor'>

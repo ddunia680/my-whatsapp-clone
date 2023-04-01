@@ -141,20 +141,22 @@ const messagesSlice = createSlice({
         SETLASTMESSAGELIVE: (state, action) => {
             const theChat = state.chats.findIndex(chat => chat.interlocutor._id === action.payload.message.from);
             if(action.payload.message.from !== action.payload.userId) {
-                if(action.payload.message.message.includes('http')) {
+                if(action.payload.message.message.includes('mp3')) {
                     state.chats[theChat].lastMessage = 'audio message';
                 } else {
                     state.chats[theChat].lastMessage = action.payload.message.message;
                 }
             }
             state.chats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+
         }
     },
     extraReducers(builder) {
         builder
         .addCase(uploadMessage.fulfilled, (state, action) => {
-            // state.messagesArray.push(action.payload);
-            // console.log(action.payload);
+            state.messagesArray.push(action.payload);
+            console.log(action.payload);
         })
         .addCase(uploadMessage.rejected, (state, action) => {
             console.log(action.error.message);
@@ -162,6 +164,10 @@ const messagesSlice = createSlice({
         })
 
         builder
+        .addCase(uploadAudioMessage.fulfilled, (state, action) => {
+            state.messagesArray.push(action.payload);
+            console.log(action.payload);
+        })
         .addCase(uploadAudioMessage.rejected, (state, action) => {
             console.log(action.error.message);
             state.error = action.error.message;

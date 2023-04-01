@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopOfChats from '../../components/topOfChatsList/topOfChats';
 import SearchBar from '../../components/searchBar/searchBar';
 import MyChatItem from '../../components/chatItem/myChatItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { pullChats, SETLASTMESSAGELIVE, SETTYPING } from '../../store/messages';
+import { pullChats, SETLASTMESSAGELIVE } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
@@ -15,9 +15,9 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
-    // console.log(myChats);
+    console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
-    // const currentChat = useSelector(state => state.messages.currentChat);
+    const [newUnseenM, setNewUnseenM] = useState(0);
 
     useEffect(() => {
         const info = {
@@ -38,16 +38,19 @@ function LeftMenu(props) {
 
     useEffect(() => {
         if(io) {
-          io.getIO().on('received-message', message => {
-            // console.log(message);
-            dispatch(ADDLIVEMESSAGE(message));
-            dispatch(SETLASTMESSAGELIVE({message: message, userId: userId}));
+          io.getIO().on('received message', message => {
+            console.log(message);
+            if(message.to.toString() === userId.toString()) {
+                dispatch(ADDLIVEMESSAGE(message));
+                dispatch(SETLASTMESSAGELIVE({message: message, userId: userId}));
+                setNewUnseenM(newUnseenM + 1);
+            }
           });
 
-          io.getIO().on('typing', chatID => {
-            console.log('typing');
-            dispatch(SETTYPING(chatID));
-          })
+        //   io.getIO().on('typing', chatID => {
+        //     console.log('typing');
+        //     dispatch(SETTYPING(chatID));
+        //   })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

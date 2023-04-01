@@ -115,12 +115,14 @@ exports.postAMessage = (req, res, next) => {
                 })
                 .then(allresponse => {
                     // console.log(allresponse);
-                    if(socket) {
-                        console.log('emiting to room' + from);
-                        // socket.getIO().on('sent-message', () => {
-                            socket.getIO().to(from).emit('received-message', allresponse);
-                        // });
-                    }
+                    // if(socket) {
+                    //         if(from.toString() === req.userId.toString() ) {
+
+                    //         } else {
+                    //             socket.getIO().to(from).emit('received-message', allresponse);
+                    //         }
+                    //         // socket.getIO().to(to).emit('received-notification', allresponse);
+                    // }
 
                     return res.status(200).json({
                         message: allresponse

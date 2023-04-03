@@ -72,7 +72,6 @@ function SignIn(props) {
         const data = new FormData();
         data.append('email', email);
         data.append('password', password);
-        console.log(`${process.env.REACT_APP_BACKEND_URL}auth/login`);
 
         axios.post(`${process.env.REACT_APP_BACKEND_URL}auth/login`, data)
         .then(res => {

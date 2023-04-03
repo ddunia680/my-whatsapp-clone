@@ -64,6 +64,18 @@ function MyChatItem(props) {
 
     useEffect(() => {
         if(io) {
+            io.getIO().on('received message', message => {
+                if(message.to.toString() === userId.toString()) {
+                    if(
+                        (message.to.toString() === props.interId.toString() && 
+                        message.from.toString() === userId.toString()) || 
+                        (message.to.toString() === userId.toString() && 
+                        message.from.toString() === props.interId.toString())
+                    ) {
+                        setUnseenNumber(unseenNumber + 1);
+                    }
+                }
+            })
             io.getIO().on('isTyping', chatId => {
                 if(props.chatId.toString() === chatId.toString()) {
                     setTyping('typing...');
@@ -90,7 +102,7 @@ function MyChatItem(props) {
         <div className={chatItemClasses.join(' ')} onClick={() => openChat()}>
             {/* User profile */}
             { !props.profile ? 
-            <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
+            <UserCircleIcon className="w-[2.8rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
             <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
                 <img src={props.profile} alt='the profile' className='w-[100%] h-[100%]'/>
             </div>
@@ -120,7 +132,7 @@ function MyChatItem(props) {
                     </p>
                     { unseenNumber ? 
                         <UnreadMessage number={unseenNumber}/> : 
-                        <div className='text-darkSpecial'>p</div> }
+                        <div className='text-darkSpecial'></div> }
                 </div>
                 
             </div>

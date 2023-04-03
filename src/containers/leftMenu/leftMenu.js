@@ -7,6 +7,7 @@ import { pullChats, SETLASTMESSAGELIVE } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
+import peer from '../../utility/peer';
 
 const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 
@@ -15,7 +16,7 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
-    console.log(myChats);
+    // console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
     const [newUnseenM, setNewUnseenM] = useState(0);
 
@@ -24,9 +25,24 @@ function LeftMenu(props) {
             token: token,
             url: `${process.env.REACT_APP_BACKEND_URL}getChats`
         }
-        dispatch(pullChats(info))
+        dispatch(pullChats(info));
+        peer.init(userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if(peer) {
+            peer.usePeer().on('connection', (conn) => {
+                conn.on('data', (data) => {
+                    console.log(data);
+                });
+
+                conn.on('open', () => {
+                    conn.send('hello');
+                })
+            })
+        }
+    })
 
     useEffect(() => {
         const socket = io.init(ENDPOINT);
@@ -39,18 +55,13 @@ function LeftMenu(props) {
     useEffect(() => {
         if(io) {
           io.getIO().on('received message', message => {
-            console.log(message);
+            // console.log(message);
             if(message.to.toString() === userId.toString()) {
                 dispatch(ADDLIVEMESSAGE(message));
                 dispatch(SETLASTMESSAGELIVE({message: message, userId: userId}));
                 setNewUnseenM(newUnseenM + 1);
             }
           });
-
-        //   io.getIO().on('typing', chatID => {
-        //     console.log('typing');
-        //     dispatch(SETTYPING(chatID));
-        //   })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -61,7 +72,6 @@ function LeftMenu(props) {
     } else if(chatsLoadingState === 'succeeded') {
         if(myChats.length === 0) {
             chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
-            alert('welcome!!! click the chat icon on top of your screen to start a chat with a user');
         } else {
             chats = myChats.map(singleChat => {
             return <MyChatItem 

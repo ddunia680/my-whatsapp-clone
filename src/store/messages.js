@@ -114,6 +114,7 @@ const messagesSlice = createSlice({
         messagesArray: [],
         chats: [],
         currentChat: null,
+        callReceptionData: {},
         error: ''
     },
     reducers: {
@@ -148,8 +149,9 @@ const messagesSlice = createSlice({
                 }
             }
             state.chats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-
-
+        },
+        SETCALLRECEPTDATA: (state, action) => {
+            state.callReceptionData = action.payload;
         }
     },
     extraReducers(builder) {
@@ -210,5 +212,12 @@ const messagesSlice = createSlice({
     }
 });
 
-export const { RESETCURRENTCHAT, SETCURRENTCHAT, ADDLIVEMESSAGE, SETTYPING, SETLASTMESSAGELIVE } = messagesSlice.actions;
+export const { 
+    RESETCURRENTCHAT, 
+    SETCURRENTCHAT, 
+    ADDLIVEMESSAGE, 
+    SETTYPING, 
+    SETLASTMESSAGELIVE,
+    SETCALLRECEPTDATA
+ } = messagesSlice.actions;
 export default messagesSlice.reducer;

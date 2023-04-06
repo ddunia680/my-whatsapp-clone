@@ -4,7 +4,7 @@ import InterlocutorView from '../InterlocutorView/interlocutorView';
 import { UserCircleIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { PhoneIcon, VideoCameraIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import { SETAUDIOCALL, SETVIDEOCALL } from '../../store/uiStates';
+import { SETVIDEOCALL, SETSTARTEDCALL, SETCALLWITHVIDEO } from '../../store/uiStates';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import io from '../../utility/socket';
@@ -21,14 +21,18 @@ function Correspondant(props) {
     const [typing, setTyping] = useState('');
 
     const audioCallHandler = () => {
+        dispatch(SETSTARTEDCALL(true));
+        dispatch(SETCALLWITHVIDEO(false));
         if(window.innerWidth <= 500) {
-            navigate('/onAudioCall');
-            dispatch(SETAUDIOCALL(true));
+            navigate('/onVideoCall');
+            dispatch(SETVIDEOCALL(true));
         } else {
-            dispatch(SETAUDIOCALL(true));
+            dispatch(SETVIDEOCALL(true));
         }
     }
     const videoCallHandler = () => {
+        dispatch(SETSTARTEDCALL(true));
+        dispatch(SETCALLWITHVIDEO(true));
         if(window.innerWidth <= 500) {
             navigate('/onVideoCall');
             dispatch(SETVIDEOCALL(true));

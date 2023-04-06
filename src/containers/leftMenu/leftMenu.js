@@ -3,19 +3,22 @@ import TopOfChats from '../../components/topOfChatsList/topOfChats';
 import SearchBar from '../../components/searchBar/searchBar';
 import MyChatItem from '../../components/chatItem/myChatItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { pullChats, SETLASTMESSAGELIVE } from '../../store/messages';
+import { pullChats, SETCALLRECEPTDATA, SETLASTMESSAGELIVE } from '../../store/messages';
 import Spinner from '../../UI/spinner/spinner';
 import { ADDLIVEMESSAGE } from '../../store/messages';
 import io from '../../utility/socket';
-import peer from '../../utility/peer';
+import { SETCALLWITHVIDEO, SETRECEIVINGCALL, SETVIDEOCALL } from '../../store/uiStates';
+import { useNavigate } from 'react-router-dom';
 
 const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 
 function LeftMenu(props) {
     let dispatch = useDispatch();
+    let navigate = useNavigate();
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
+    
     // console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
     const [newUnseenM, setNewUnseenM] = useState(0);
@@ -26,23 +29,8 @@ function LeftMenu(props) {
             url: `${process.env.REACT_APP_BACKEND_URL}getChats`
         }
         dispatch(pullChats(info));
-        peer.init(userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        if(peer) {
-            peer.usePeer().on('connection', (conn) => {
-                conn.on('data', (data) => {
-                    console.log(data);
-                });
-
-                conn.on('open', () => {
-                    conn.send('hello');
-                })
-            })
-        }
-    })
 
     useEffect(() => {
         const socket = io.init(ENDPOINT);
@@ -62,6 +50,26 @@ function LeftMenu(props) {
                 setNewUnseenM(newUnseenM + 1);
             }
           });
+
+          io.getIO().on('userCalling', (data) => {
+            dispatch(SETRECEIVINGCALL(true))
+            dispatch(SETCALLRECEPTDATA(data));
+            if(data.video) {
+                dispatch(SETCALLWITHVIDEO(true));
+            }
+            io.getIO().emit('ringing', data.from);
+          })
+
+          io.getIO().on('callEnded', () => {
+                dispatch(SETRECEIVINGCALL(false));
+                dispatch(SETCALLWITHVIDEO(false));
+                
+                if(window.innerWidth <= 500) {
+                    navigate('/chatWindow');
+                } else {
+                    dispatch(SETVIDEOCALL(false));
+                }
+            })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

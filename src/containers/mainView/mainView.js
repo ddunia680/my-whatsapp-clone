@@ -3,19 +3,19 @@ import LeftMenu from '../leftMenu/leftMenu';
 import RightView from '../rightView/rightView';
 import NewChatView from '../NewChatView/newChatView';
 import SearchMessage from '../../components/searchMessage/searchMessage';
-import AudioCallUI from '../../components/audioCall/audioCallUI';
+import CallNotification from '../../components/ReceivingCall/callNotification';
 import WelcomeRightVIew from '../welcomeRightView/welcomeRightVIew';
 import AuthContainer from '../AuthContainer/authContainer';
 
 import { Transition } from 'react-transition-group';
 import { useSelector } from 'react-redux';
-import VideoCallUI from '../../components/videoCallUI/videoCallUI';
+import VideoCallUI from '../../components/callsCenter/callOut';
 
 function MainView(props) {
     const newChatUI = useSelector(state => state.uiStates.newChatUI);
 
     const [showSearchMessagesView, setShowSearchMView] = useState(false);
-    const onAudioCall = useSelector(state => state.uiStates.onAudioCall);
+    const onReceivingCall = useSelector(state => state.uiStates.onReceivingCall);
     const onVideoCall = useSelector(state => state.uiStates.onVideoCall);
     const welcomeView = useSelector(state => state.uiStates.welcomeView);
     // const interlocutor = useSelector(state => state.users.newChatUI)
@@ -48,7 +48,7 @@ function MainView(props) {
                 <SearchMessage showSearch={showSearchMessagesView} setShowSearch={ans => setShowSearchMView(ans)}/>
             </Transition>
 
-                { onAudioCall ? <AudioCallUI/> : null}
+                { onReceivingCall ? <CallNotification/> : null}
                 { onVideoCall ? <VideoCallUI/> : null}         
             
         </div>

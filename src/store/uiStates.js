@@ -3,17 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 const uiStates = createSlice({
     name: 'uiStates',
     initialState: {
-        onAudioCall: false,
+        onReceivingCall: false,
         onVideoCall: false,
+        startedCall: false,
+        callWithVideo: false,
         newChatUI: false,
         recordingUI: false,
         welcomeView: true,
         signInUI: true,
-        profileEditView: false
+        profileEditView: false,
+        myVideoStream: null
     },
     reducers: {
-        SETAUDIOCALL: (state, action) => {
-            state.onAudioCall = action.payload;
+        SETRECEIVINGCALL: (state, action) => {
+            state.onReceivingCall = action.payload;
         },
         SETVIDEOCALL: (state, action) => {
             state.onVideoCall = action.payload;
@@ -32,17 +35,29 @@ const uiStates = createSlice({
         },
         SHOWPROFILEEDITVIEW: (state, action) => {
             state.profileEditView = action.payload;
+        },
+        SETSTARTEDCALL: (state, action) => {
+            state.startedCall = action.payload;
+        },
+        SETCALLWITHVIDEO: (state, action) => {
+            state.callWithVideo = action.payload;
+        },
+        SETMYSTREAM: (state, action) => {
+            state.myVideoStream = action.payload;
         }
     }
 });
 
 export const { 
-    SETAUDIOCALL, 
+    SETRECEIVINGCALL, 
     SETVIDEOCALL, 
     SETNEWCHATUIVISIBILITY, 
     SETAUDIOUIVISIBILITY, 
     SETSHOWWELCOMEVIEW,
     SHOWSIGNINVIEW,
-    SHOWPROFILEEDITVIEW
+    SHOWPROFILEEDITVIEW,
+    SETSTARTEDCALL,
+    SETCALLWITHVIDEO,
+    SETMYSTREAM
 } = uiStates.actions;
 export default uiStates.reducer;

@@ -2,13 +2,13 @@ import { Route, Routes } from "react-router-dom";
 
 import SearchMessage from "./components/searchMessage/searchMessage";
 import MainView from "./containers/mainView/mainView";
-import AudioCallUI from "./components/audioCall/audioCallUI";
-import VideoCallUI from "./components/videoCallUI/videoCallUI";
+import VideoCallUI from "./components/callsCenter/callOut";
 import RightView from "./containers/rightView/rightView";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { LOGIN, LOGOUT, moreSigninInfo } from "./store/authenticate";
 import { RESETCURRENTCHAT } from "./store/messages";
+import { SETMYSTREAM } from "./store/uiStates";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +20,17 @@ function App() {
 
 // console.log(new Date(expiryDate).getTime() - new Date().getTime());
 // console.log("the date now "+new Date().getTime());
+
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({video: true, audio: true})
+    .then(stream => {
+      dispatch(SETMYSTREAM(stream));
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     if(new Date(expiryDate).getTime() <= new Date().getTime()) {
       dispatch(LOGOUT());
@@ -57,7 +68,6 @@ function App() {
       <Routes>
         <Route path="/" element={<MainView/>}/>
         { window.innerWidth <= 500 ? <Route path="/chatWindow" element={<RightView/>}/> : null}
-        { window.innerWidth <= 500 ? <Route path="/onAudioCall" element={<AudioCallUI/>}/> : null }
         { window.innerWidth <= 500 ? <Route path="/onVideoCall" element={<VideoCallUI/>}/> : null }
         { window.innerWidth <= 500 ? <Route path="/searchMessage" element={<SearchMessage/>}/> : null}
 

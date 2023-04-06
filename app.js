@@ -89,8 +89,25 @@ mongoose.connect(process.env.CONNECT_STRING)
             socket.in(data.to).emit('isRecording', data.chat);
         })
 
+        socket.on('callUser', ({to, from, name, prof, signalData, video}) => {
+            // console.log(video);
+            socket.to(to).emit('userCalling', {signal: signalData, from: from, video: video, name: name, prof: prof });
+        })
+
+        socket.on('ringing', (theID) => {
+            socket.to(theID).emit('isRinging');
+        })
+
+        socket.on('answerCall', (data) => {
+            socket.to(data.to).emit('callAccepted', data.signal);
+        })
+
+        socket.on('endCall', (userId) => {
+            console.log('call ended');
+            socket.to(userId).emit('callEnded');
+        })
+
         socket.on('disconnect', () => {
-            console.log(user_identification);
             console.log(`User ${socket.id} disconnected`);
             if(user_identification) {
                 const date = Date.now();

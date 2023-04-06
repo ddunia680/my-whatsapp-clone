@@ -18,7 +18,7 @@ function CallOut(props) {
     const userId = useSelector(state => state.authenticate.userId);
     const username = useSelector(state => state.authenticate.username);
     // const [timeRun, setTimeRun] = useState(0);
-    const [stream, setStream] = useState(null);
+    // const [stream, setStream] = useState(null);
     // console.log(stream);
     const [callAccepted, setCallAccepted] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
@@ -27,6 +27,7 @@ function CallOut(props) {
     // console.log(IStartedTheCall);
     const ISVideoCall = useSelector(state => state.uiStates.callWithVideo);
     const receiptData = useSelector(state => state.messages.callReceptionData);
+    const myStream = useSelector(state => state.uiStates.myVideoStream);
 
     const myVideo = useRef();
     const userVideo = useRef();
@@ -44,24 +45,21 @@ function CallOut(props) {
 
     useEffect(() => {
         if(ISVideoCall) {
-            navigator.mediaDevices.getUserMedia({video: true, audio: true})
-            .then(thestream => {
-                setStream(thestream);
-                setTimeout(() => {
-                    myVideo.current.srcObject = thestream;
-                }, 2000)
-            })
-            .catch(err => {
-                console.log(err);
-            });
+            // navigator.mediaDevices.getUserMedia({video: true, audio: true})
+            // .then(thestream => {
+            //     setStream(thestream);
+            //     setTimeout(() => {
+                if(myStream) {
+                    myVideo.current.srcObject = myStream;
+                }
+                    
+                // }, 2000)
+            // })
+            // .catch(err => {
+            //     console.log(err);
+            // });
         } else {
-            navigator.mediaDevices.getUserMedia({video: false, audio: true})
-            .then(thestream => {
-                setStream(thestream);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+            console.log(myStream);
         }
         if(IStartedTheCall) {
             callInterlocutor();
@@ -75,7 +73,7 @@ function CallOut(props) {
         const peer = new Peer({
             initiator: true,
             trickle: false,
-            stream: stream
+            stream: myStream
         });
 
         peer.on('signal', (data) => {
@@ -112,7 +110,7 @@ function CallOut(props) {
         const peer = new Peer({
             initiator: false,
             trickle: false,
-            stream: stream
+            stream: myStream
         });
 
         peer.on('signal', (data) => {
@@ -131,16 +129,16 @@ function CallOut(props) {
 
     const endVideoCallHandler = () => {
         if(window.innerWidth <= 500) {
-            if(myVideo.current) {
-                const tracks = myVideo.current.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
-            }
+            // if(myVideo.current) {
+            //     const tracks = myVideo.current.srcObject.getTracks();
+            //     tracks.forEach(track => track.stop());
+            // }
             navigate('/chatWindow');
         } else {
-            if(myVideo.current) {
-                const tracks = myVideo.current.srcObject.getTracks();
-                tracks.forEach(track => track.stop());
-            }
+            // if(myVideo.current) {
+            //     const tracks = myVideo.current.srcObject.getTracks();
+            //     tracks.forEach(track => track.stop());
+            // }
             dispatch(SETVIDEOCALL(false));
         }
         if(IStartedTheCall) {
@@ -161,7 +159,7 @@ function CallOut(props) {
             { !callAccepted ? <audio src={callInitiated} loop autoPlay className='hidden'/> : null}
 
             {/* My video stream */}
-            { stream && ISVideoCall ? (
+            { myStream && ISVideoCall ? (
                 <div className='absolute bg-gray-800 w-[50%] h-[30%] right-1 top-1 rounded-xl'>
                         <video ref={myVideo} className='w-[100%] h-[100%] object-contain' muted autoPlay playsInline/>
                 </div>) 
@@ -178,9 +176,9 @@ function CallOut(props) {
                 </div>
             }
             <div className='absolute bottom-5 w-[100%] flex justify-around items-center'>
-                <button className='text-slate-100 py-2 px-4 hover:bg-primary'><MicrophoneIcon className='w-[1.5rem]' title='Switch to audio call'/></button>
-                <button className='text-slate-100 py-2 px-4 hover:bg-primary'><VideoCameraSlashIcon className='w-[1.5rem]' title='Mute'/></button>
-                <button className='bg-red-500 text-slate-100 p-3 rotate-90'><PhoneIcon className='w-[1.5rem]' title='End call' onClick={endVideoCallHandler} /></button>
+                <button className='text-slate-100 py-2 px-4 bg-opacity-10 hover:bg-primary rounded-full'><MicrophoneIcon className='w-[1.5rem]' title='Switch to audio call'/></button>
+                <button className='text-slate-100 py-2 px-4 hover:bg-primary rounded-full'><VideoCameraSlashIcon className='w-[1.5rem]' title='Mute'/></button>
+                <button className='bg-red-700 text-slate-100 p-3 rotate-90 rounded-full hover:bg-red-500'><PhoneIcon className='w-[1.5rem]' title='End call' onClick={endVideoCallHandler} /></button>
             </div>         
         </div>
     );

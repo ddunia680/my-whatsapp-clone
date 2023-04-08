@@ -83,19 +83,24 @@ mongoose.connect(process.env.CONNECT_STRING)
 
         socket.on('typing', data => {
             socket.in(data.to).emit('isTyping', data.chat);
-        })
+        });
 
         socket.on('recording', data => {
             socket.in(data.to).emit('isRecording', data.chat);
-        })
+        });
 
         socket.on('callUser', ({to, from, name, prof, signalData, video}) => {
-            // console.log(video);
-            socket.to(to).emit('userCalling', {signal: signalData, from: from, video: video, name: name, prof: prof });
-        })
+            console.log('We did launch the call');
+            socket.to(to).emit('userCalling', {signal: signalData, from: from, to: to, video: video, name: name, prof: prof });
+        });
 
         socket.on('ringing', (theID) => {
             socket.to(theID).emit('isRinging');
+        })
+
+        socket.on('alreadyOnCall', (callerID) => {
+            console.log('has already on another call');
+            socket.to(callerID).emit('isAlreadyOnCall');
         })
 
         socket.on('answerCall', (data) => {

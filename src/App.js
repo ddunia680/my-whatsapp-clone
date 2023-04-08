@@ -4,6 +4,7 @@ import SearchMessage from "./components/searchMessage/searchMessage";
 import MainView from "./containers/mainView/mainView";
 import VideoCallUI from "./components/callsCenter/callOut";
 import RightView from "./containers/rightView/rightView";
+import CallNotification from "./components/ReceivingCall/callNotification";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { LOGIN, LOGOUT, moreSigninInfo } from "./store/authenticate";
@@ -70,6 +71,7 @@ function App() {
         { window.innerWidth <= 500 ? <Route path="/chatWindow" element={<RightView/>}/> : null}
         { window.innerWidth <= 500 ? <Route path="/onVideoCall" element={<VideoCallUI/>}/> : null }
         { window.innerWidth <= 500 ? <Route path="/searchMessage" element={<SearchMessage/>}/> : null}
+        { window.innerWidth <= 500 ? <Route path="/receivingCall" element={<CallNotification />}/>: null}
 
         <Route path="*" element={<MainView/>}/>
       </Routes>

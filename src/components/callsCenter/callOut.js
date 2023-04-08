@@ -9,6 +9,7 @@ import { useDrag } from 'react-use-gesture';
 import { useNavigate } from 'react-router-dom';
 import io from '../../utility/socket';
 import Peer from 'simple-peer';
+import { SETCALLRECEPTDATA } from '../../store/messages';
 
 function CallOut(props) {
     const dispatch = useDispatch();
@@ -17,14 +18,12 @@ function CallOut(props) {
     const interlocutor = useSelector(state => state.users.interlocutor);
     const userId = useSelector(state => state.authenticate.userId);
     const username = useSelector(state => state.authenticate.username);
-    // const [timeRun, setTimeRun] = useState(0);
-    // const [stream, setStream] = useState(null);
-    // console.log(stream);
+    const profileUrl = useSelector(state => state.authenticate.profileUrl);
+    // const [controls, setControls] = useState(false);
     const [callAccepted, setCallAccepted] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
     const [callStatusMessage, setCallStatusMessage] = useState('calling...');
     const IStartedTheCall = useSelector(state => state.uiStates.startedCall);
-    // console.log(IStartedTheCall);
     const ISVideoCall = useSelector(state => state.uiStates.callWithVideo);
     const receiptData = useSelector(state => state.messages.callReceptionData);
     const myStream = useSelector(state => state.uiStates.myVideoStream);
@@ -45,19 +44,9 @@ function CallOut(props) {
 
     useEffect(() => {
         if(ISVideoCall) {
-            // navigator.mediaDevices.getUserMedia({video: true, audio: true})
-            // .then(thestream => {
-            //     setStream(thestream);
-            //     setTimeout(() => {
                 if(myStream) {
                     myVideo.current.srcObject = myStream;
                 }
-                    
-                // }, 2000)
-            // })
-            // .catch(err => {
-            //     console.log(err);
-            // });
         } else {
             console.log(myStream);
         }
@@ -82,6 +71,7 @@ function CallOut(props) {
                     to: interlocutor._id,
                     from: userId,
                     name: username,
+                    prof: profileUrl,
                     signalData: data,
                     video: ISVideoCall
                 });
@@ -91,13 +81,18 @@ function CallOut(props) {
         peer.on('stream', (theStream) => {
             console.log(theStream);
             userVideo.current.srcObject = theStream;
-        });
+        })
+
+        io.getIO().on('isAlreadyOnCall', () => {
+            setCallStatusMessage('Already on another call...')
+        })
         
         io.getIO().on('isRinging', () => {
             setCallStatusMessage('ringing...');
         })
 
         io.getIO().on('callAccepted', (signal) => {
+            console.log('call answered!');
             setCallAccepted(true);
             peer.signal(signal);
         })
@@ -129,16 +124,8 @@ function CallOut(props) {
 
     const endVideoCallHandler = () => {
         if(window.innerWidth <= 500) {
-            // if(myVideo.current) {
-            //     const tracks = myVideo.current.srcObject.getTracks();
-            //     tracks.forEach(track => track.stop());
-            // }
             navigate('/chatWindow');
         } else {
-            // if(myVideo.current) {
-            //     const tracks = myVideo.current.srcObject.getTracks();
-            //     tracks.forEach(track => track.stop());
-            // }
             dispatch(SETVIDEOCALL(false));
         }
         if(IStartedTheCall) {
@@ -148,6 +135,7 @@ function CallOut(props) {
         }
         
         setCallEnded(true);
+        dispatch(SETCALLRECEPTDATA({}));
         connectionRef.current.destroy();
     }
 
@@ -175,11 +163,18 @@ function CallOut(props) {
                     <p className='callMessage text-md flex justify-center items-center'>{callStatusMessage}</p>
                 </div>
             }
-            <div className='absolute bottom-5 w-[100%] flex justify-around items-center'>
-                <button className='text-slate-100 py-2 px-4 bg-opacity-10 hover:bg-primary rounded-full'><MicrophoneIcon className='w-[1.5rem]' title='Switch to audio call'/></button>
-                <button className='text-slate-100 py-2 px-4 hover:bg-primary rounded-full'><VideoCameraSlashIcon className='w-[1.5rem]' title='Mute'/></button>
-                <button className='bg-red-700 text-slate-100 p-3 rotate-90 rounded-full hover:bg-red-500'><PhoneIcon className='w-[1.5rem]' title='End call' onClick={endVideoCallHandler} /></button>
-            </div>         
+            {/* Controls */}
+                <div className='absolute bottom-5 w-[100%] flex justify-around items-center'>
+                    <button className='text-slate-100 py-2 px-4 bg-opacity-10 hover:bg-primary rounded-full'>
+                        <MicrophoneIcon className='w-[1.5rem]' title='Switch to audio call'/>
+                    </button>
+                    <button className='text-slate-100 py-2 px-4 hover:bg-primary rounded-full'>
+                        <VideoCameraSlashIcon className='w-[1.5rem]' title='Mute'/>
+                    </button>
+                    <button className='bg-red-700 text-slate-100 p-3 rotate-90 rounded-full hover:bg-red-500'>
+                        <PhoneIcon className='w-[1.5rem]' title='End call' onClick={endVideoCallHandler} />
+                    </button>
+                </div>                     
         </div>
     );
 }

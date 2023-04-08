@@ -23,7 +23,7 @@ function AudioCallUI(props) {
         })
     });
 
-    const mainClasses = 'absolute z-500 bg-darkSpecial w-[100%] h-[100%] md:h-auto md:w-[17rem] flex flex-col justify-center md:justify-start items-center space-y-5 py-3 shadow-md shadow-gray-600 select-none';
+    const mainClasses = 'absolute z-500 bg-darkSpecial w-[100%] h-[100%] md:h-auto md:w-[17rem] flex flex-col justify-evenly md:justify-start items-center space-y-5 py-3 shadow-md shadow-gray-600 select-none';
 
     useEffect(() => {
         setTimeout(() => {
@@ -56,7 +56,12 @@ function AudioCallUI(props) {
             left: containerPos.x
         }} className={mainClasses}>
                 { receivingC ? <audio src={receiving} loop autoPlay playsInline className='hidden'/> : null}
+                <div className='flex flex-col justify-start items-center'>
+                    <div className=' w-[10rem] h-[10rem] md:w-[5rem] md:h-[5rem] rounded-full overflow-hidden'>
+                        <img src={receiptData.prof} alt='' className='w-[100%] h-[100%] object-contain' />
+                    </div>
                 <p className='callMessage'> {receiptData.name} is Calling...</p>
+                </div>
                 <div className='flex justify-between items-center w-[70%]'>
                     {/* Accept call */}
                     <button className='bg-greenSpecial text-slate-100 p-3 rounded-full buttonShaking' onClick={acceptCall}>

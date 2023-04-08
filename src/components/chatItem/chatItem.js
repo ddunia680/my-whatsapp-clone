@@ -60,7 +60,7 @@ function ChatItem(props) {
     }, [interlocutor]);
     
     return (
-        <div className='flex justify-start items-center w-[100%] hover:bg-primary' onClick={() => openChat()}>
+        <div className='flex justify-start items-center w-[100%] hover:bg-primary cursor-pointer' onClick={() => openChat()}>
             { !props.profile ? 
             <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
             <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>

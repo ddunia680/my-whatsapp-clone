@@ -18,6 +18,7 @@ function LeftMenu(props) {
     const token = useSelector(state => state.authenticate.token);
     const chatsLoadingState = useSelector(state => state.messages.chatsLoadingState);
     const myChats = useSelector(state => state.messages.chats);
+    const receiptData = useSelector(state => state.messages.callReceptionData);
     
     // console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
@@ -52,13 +53,26 @@ function LeftMenu(props) {
           });
 
           io.getIO().on('userCalling', (data) => {
-            dispatch(SETRECEIVINGCALL(true))
-            dispatch(SETCALLRECEPTDATA(data));
-            if(data.video) {
-                dispatch(SETCALLWITHVIDEO(true));
+            console.log(data);
+            if(data.from.toString() !== userId.toString() && data.to.toString() === userId.toString()) {
+                if(receiptData === {}) {
+                    io.getIO().emit('alreadyOnCall', receiptData.from);
+                } else {
+                    if(window.innerWidth <= 500) {
+                        navigate('/receivingCall');
+                    } else {
+                        dispatch(SETRECEIVINGCALL(true));
+                    }
+                    
+                    dispatch(SETCALLRECEPTDATA(data));
+                    if(data.video) {
+                        dispatch(SETCALLWITHVIDEO(true));
+                    }
+                    io.getIO().emit('ringing', data.from);
+                }
             }
-            io.getIO().emit('ringing', data.from);
           })
+
 
           io.getIO().on('callEnded', () => {
                 dispatch(SETRECEIVINGCALL(false));

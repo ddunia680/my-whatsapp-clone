@@ -47,9 +47,10 @@ function MainView(props) {
             >
                 <SearchMessage showSearch={showSearchMessagesView} setShowSearch={ans => setShowSearchMView(ans)}/>
             </Transition>
-
-                { onReceivingCall ? <CallNotification/> : null}
-                { onVideoCall ? <VideoCallUI/> : null}         
+ 
+                { window.innerWidth > 500 && onReceivingCall ? <CallNotification/> : null}
+                { window.innerWidth > 500 && onVideoCall ? <VideoCallUI/> : null} 
+                        
             
         </div>
     );

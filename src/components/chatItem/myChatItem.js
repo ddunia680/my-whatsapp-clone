@@ -103,8 +103,8 @@ function MyChatItem(props) {
             {/* User profile */}
             { !props.profile ? 
             <UserCircleIcon className="w-[2.8rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
-            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
-                <img src={props.profile} alt='the profile' className='w-[100%] h-[100%]'/>
+            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4 bg-iconsColor'>
+                <img src={props.profile} alt='the profile' className='w-[100%] h-[100%] object-contain'/>
             </div>
             }
             {/* User name & last message */}

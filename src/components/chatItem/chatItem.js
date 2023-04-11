@@ -63,8 +63,8 @@ function ChatItem(props) {
         <div className='flex justify-start items-center w-[100%] hover:bg-primary cursor-pointer' onClick={() => openChat()}>
             { !props.profile ? 
             <UserCircleIcon className="w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> : 
-            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4'>
-                <img src={props.profile} alt='the profile' className='w-[100%] h-[100%]'/>
+            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden mx-2 md:mx-4 bg-iconsColor'>
+                <img src={props.profile} alt='the profile' className='w-[100%] h-[100%] object-contain'/>
             </div>
             }
             <div className='flex justify-between items-center w-[79%] border-b-[1px] border-gray-500'>

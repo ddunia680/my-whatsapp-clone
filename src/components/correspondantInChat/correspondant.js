@@ -98,7 +98,7 @@ function Correspondant(props) {
                 { !interlocutor ? 
                     <UserCircleIcon className=" w-[2rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor text-black rounded-full"/> :
                     <div className='w-[2rem] h-[2rem] md:h-[3rem] md:w-[3rem] mx-2 md:mx-4 bg-iconsColor rounded-full overflow-hidden'>
-                        <img src={interlocutor.profileUrl} alt='profile pic' className='w-[100%] h-[100%]'/>
+                        <img src={interlocutor.profileUrl} alt='profile pic' className='w-[100%] h-[100%] object-contain'/>
                     </div>
                 }
 

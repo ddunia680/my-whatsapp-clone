@@ -27,6 +27,8 @@ function CallOut(props) {
     const ISVideoCall = useSelector(state => state.uiStates.callWithVideo);
     const receiptData = useSelector(state => state.messages.callReceptionData);
     const myStream = useSelector(state => state.uiStates.myVideoStream);
+    const [videoStreamOn, setVideoStreamOn] = useState(false);
+    const [audioStreamOn, setAudioStreamOn] = useState(true);
 
     const myVideo = useRef();
     const userVideo = useRef();
@@ -42,13 +44,18 @@ function CallOut(props) {
 
     const containerClasses = ['absolute bg-darkSpecial w-[100%] h-[100%] md:h-[auto] md:w-[25rem] flex flex-col justify-center items-center space-y-5 py-3 shadow-md shadow-gray-600 select-none z-1000'];
 
+    const videoToggleClasses = ['py-2 px-4 hover:bg-primary rounded-full', videoStreamOn ? 'bg-gray-100 text-slate-700' : 'text-slate-100'];
+
+    const audioToggleClasses = ['py-2 px-4 hover:bg-primary rounded-full', audioStreamOn ? 'bg-gray-100 text-slate-700' : 'text-slate-100'];
+
     useEffect(() => {
         if(ISVideoCall) {
                 if(myStream) {
                     myVideo.current.srcObject = myStream;
                 }
+                setVideoStreamOn(true);
         } else {
-            console.log(myStream);
+            setVideoStreamOn(false);
         }
         if(IStartedTheCall) {
             callInterlocutor();
@@ -99,6 +106,24 @@ function CallOut(props) {
 
         connectionRef.current = peer;
     }
+
+    useEffect(() => {
+        let videoTrack = myStream.getTracks().find(track => track.kind === 'video');
+        let AudioTrack = myStream.getTracks().find(track => track.kind === 'audio');
+
+        if(videoStreamOn) {
+            videoTrack.enabled = true;
+        } else {
+            videoTrack.enabled = false;
+        }
+
+        if(audioStreamOn) {
+            AudioTrack.enabled = true;
+        } else {
+            AudioTrack.enabled = false;
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [videoStreamOn, audioStreamOn]);
 
     const answerACall = () => {
         setCallAccepted(true);
@@ -165,14 +190,14 @@ function CallOut(props) {
             }
             {/* Controls */}
                 <div className='absolute bottom-5 w-[100%] flex justify-around items-center'>
-                    <button className='text-slate-100 py-2 px-4 bg-opacity-10 hover:bg-primary rounded-full'>
-                        <MicrophoneIcon className='w-[1.5rem]' title='Switch to audio call'/>
+                    <button className={audioToggleClasses.join(' ')} onClick={() => setAudioStreamOn(!audioStreamOn)}>
+                        <MicrophoneIcon className='w-[1.5rem]' title='Mute Audio'/>
                     </button>
-                    <button className='text-slate-100 py-2 px-4 hover:bg-primary rounded-full'>
-                        <VideoCameraSlashIcon className='w-[1.5rem]' title='Mute'/>
+                    <button className={videoToggleClasses.join(' ')} onClick={() => setVideoStreamOn(!videoStreamOn)}>
+                        <VideoCameraSlashIcon className='w-[1.5rem]' title='Mute Camera'/>
                     </button>
-                    <button className='bg-red-700 text-slate-100 p-3 rotate-90 rounded-full hover:bg-red-500'>
-                        <PhoneIcon className='w-[1.5rem]' title='End call' onClick={endVideoCallHandler} />
+                    <button className='bg-red-700 text-slate-100 p-3 rotate-90 rounded-full hover:bg-red-500' onClick={endVideoCallHandler}>
+                        <PhoneIcon className='w-[1.5rem]' title='End call' />
                     </button>
                 </div>                     
         </div>

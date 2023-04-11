@@ -37,8 +37,8 @@ function TopOfChats(props) {
             {/* Profile picture */}
             { !profileUrl ? 
             <UserCircleIcon className=" w-[2rem] md:w-[2.5rem] bg-gray-200 rounded-full" title={username ? username : null} onClick={() => dispatch(SHOWPROFILEEDITVIEW(true))}/> :
-            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden' title={username ? username : null}>
-                <img src={profileUrl} alt='profile pic' className='w-[100%] h-[100%]' onClick={() => dispatch(SHOWPROFILEEDITVIEW(true))}/>
+            <div className='w-[2.8rem] h-[2.8rem] rounded-full overflow-hidden bg-iconsColor' title={username ? username : null}>
+                <img src={profileUrl} alt='profile pic' className='w-[100%] h-[100%] object-contain' onClick={() => dispatch(SHOWPROFILEEDITVIEW(true))}/>
             </div>}
             <div className='flex justify-start items-center space-x-7 text-gray-200 text-lg'>
                 {/* Status Round */}

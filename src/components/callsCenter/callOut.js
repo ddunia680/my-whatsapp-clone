@@ -55,6 +55,9 @@ function CallOut(props) {
                 }
                 setVideoStreamOn(true);
         } else {
+            if(myStream) {
+                myVideo.current.srcObject = myStream;
+            }
             setVideoStreamOn(false);
         }
         if(IStartedTheCall) {
@@ -172,7 +175,7 @@ function CallOut(props) {
             { !callAccepted ? <audio src={callInitiated} loop autoPlay className='hidden'/> : null}
 
             {/* My video stream */}
-            { myStream && ISVideoCall ? (
+            { myStream ? (
                 <div className='absolute bg-gray-800 w-[50%] h-[30%] right-1 top-1 rounded-xl'>
                         <video ref={myVideo} className='w-[100%] h-[100%] object-contain' muted autoPlay playsInline/>
                 </div>) 

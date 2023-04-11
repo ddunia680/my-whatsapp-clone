@@ -77,8 +77,8 @@ function WaveForm(props) {
             : <UserCircleIcon className='w-[2rem]'/>
         : props.from.toString() === interlocutor._id ? 
             interlocutor.profileUrl ? 
-                <div className='w-[2rem] h-[2rem] rounded-full overflow-hidden'>
-                    <img src={interlocutor.profileUrl} alt='Prof pic' />
+                <div className='w-[2rem] h-[2rem] rounded-full overflow-hidden bg-slate-400'>
+                    <img src={interlocutor.profileUrl} alt='Prof pic' className='w-[100%] h-[100%] object-contain' />
                 </div>
             : <UserCircleIcon className='w-[2rem]'/>
         : <UserCircleIcon className='w-[2rem]'/> }

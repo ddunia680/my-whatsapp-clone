@@ -45,7 +45,7 @@ function App() {
 
       const info = {
         method: 'GET',
-        url: `http://localhost:8080/auth/moreLoginInfo/${userId}`
+        url: `${process.env.REACT_APP_BACKEND_URL}auth/moreLoginInfo/${userId}`
     }
     dispatch(LOGIN({token: keptToken, userId: userId}));
     dispatch(moreSigninInfo(info));

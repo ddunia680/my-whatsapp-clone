@@ -2,14 +2,18 @@ import WaveForm from '../../UI/waveForm/waveForm';
 import { ArrowDownCircleIcon } from '@heroicons/react/24/solid';
 
 import { useDispatch, useSelector } from "react-redux";
-import { updateSeen } from '../../store/messages';
+import { SETMESSAGEINTOVIEW, updateSeen } from '../../store/messages';
 import pdfFile from '../../images/pdfFile.png';
 import { useEffect } from 'react';
+import { useRef } from 'react';
 
 function Message(props) {
-    const userId = useSelector(state => state.authenticate.userId);
     const dispatch = useDispatch();
+    const userId = useSelector(state => state.authenticate.userId);
+    const messageToView = useSelector(state => state.messages.toshowIntoView);
 
+    const me = useRef();
+    
     const interlocutorMessageClasses = " relative bg-primary text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-bl-none";
 
     const myMessageClasses = 'relative ml-[30%] md:ml-[59%] bg-myMessage text-gray-50 mx-w-[20rem] min-w-[7rem] w-[70%] md:w-[40%] p-3 m-2 text-sm rounded-xl rounded-br-none';
@@ -29,8 +33,19 @@ function Message(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        if(messageToView === props.message._id) {
+            me.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+            setTimeout(() => {
+                dispatch(SETMESSAGEINTOVIEW(''));
+            }, 10000);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messageToView]);
+
     return (
-        <div className={props.message.from.valueOf() !== userId.toString() ? interlocutorMessageClasses : myMessageClasses}>
+        <div className={props.message.from.valueOf() !== userId.toString() ? interlocutorMessageClasses : myMessageClasses} ref={me}>
                 {/* If audio */}
                 { props.message.isAudio ? 
                     <WaveForm audio={ props.message.message } from={props.message.from} createdAt={props.message.createdAt}/>

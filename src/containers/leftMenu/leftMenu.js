@@ -23,6 +23,7 @@ function LeftMenu(props) {
     // console.log(myChats);
     const userId = useSelector(state => state.authenticate.userId);
     const [newUnseenM, setNewUnseenM] = useState(0);
+    const [filteredValue, setFilteredValue] = useState('');
 
     useEffect(() => {
         const info = {
@@ -86,7 +87,7 @@ function LeftMenu(props) {
             })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
 
     let chats;
     if(chatsLoadingState === 'loading') {
@@ -95,30 +96,42 @@ function LeftMenu(props) {
         if(myChats.length === 0) {
             chats = <p className='text-iconsColor text-sm mx-auto'>No Chats yet</p>
         } else {
-            chats = myChats.map(singleChat => {
-            return <MyChatItem 
-                        inter={singleChat.interlocutor}
-                        interId={singleChat.interlocutor._id}
-                        username={singleChat.interlocutor.username}
-                        profile={singleChat.interlocutor.profileUrl}
-                        message={singleChat.lastMessage}
-                        sentBy={singleChat.sentBy}
-                        updatedAt={singleChat.updatedAt}
-                        chatId={singleChat._id}
-                        key={singleChat._id}
-                    />
-            })
+            if(filteredValue) {
+                let filteredChats = myChats.filter(single => single.interlocutor.username.includes(filteredValue));
+                chats = filteredChats.map(single => {
+                    return <MyChatItem inter={single.interlocutor} interId={single.interlocutor._id} username={single.interlocutor.username} profile={single.interlocutor.profileUrl} message={single.lastMessage} sentBy={single.sentBy} updatedAt={single.updatedAt} chatId={single._id} key={single._id} />
+                })
+            } else {
+                chats = myChats.map(singleChat => {
+                return <MyChatItem 
+                            inter={singleChat.interlocutor}
+                            interId={singleChat.interlocutor._id}
+                            username={singleChat.interlocutor.username}
+                            profile={singleChat.interlocutor.profileUrl}
+                            message={singleChat.lastMessage}
+                            sentBy={singleChat.sentBy}
+                            updatedAt={singleChat.updatedAt}
+                            chatId={singleChat._id}
+                            key={singleChat._id}
+                        />
+                })
+            }
+            
         }
         
     
     } else if(chatsLoadingState === 'failed') {
         chats = <p className='text-iconsColor text-sm mx-auto'>Chats couldn't be loaded...</p>
     }
+
+    const filterChatsHandler = (input) => {
+        setFilteredValue(input);
+    }
     
     return (
         <div className='w-[100%] bg-darkSpecial min-w-[20rem] md:w-[30%] h-[100vh] flex flex-col justify-start items-start border-r-[1px] border-gray-500'>
             <TopOfChats showNewCartV={props.showNewCartV}/>
-            <SearchBar filter={true} placeHolder="Search or start a new chat"/>
+            <SearchBar filter={true} placeHolder="Search or start a new chat" filterValue={filterChatsHandler}/>
             {chats}
             
         </div>

@@ -21,7 +21,8 @@ module.exports = {
         myMessage: "#005c4b",
         greenSpecial: '#16a34a',
         specialBlue: '#0f2539',
-        currentChat: '#1c262c'
+        currentChat: '#1c262c',
+        specialPurple: '#301d2b'
       },
       backgroundImage: {
         'wallpaper': "url(./images/wallpaper.jpg)"

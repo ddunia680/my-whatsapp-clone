@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SETNEWCHATUIVISIBILITY } from '../../store/uiStates';
 import { getAllUsers } from '../../store/users';
 import Spinner from '../../UI/spinner/spinner';
+import { useState } from 'react';
 
 function NewChatView(props) {
     const dispatch = useDispatch();
@@ -16,6 +17,7 @@ function NewChatView(props) {
     const usersLoadingState = useSelector(state => state.users.usersLoadingState);
     const usersArray = useSelector(state => state.users.users);
     const token = useSelector(state => state.authenticate.token);
+    const [filteredValue, setFilteredValue] = useState('');
 
 
     const newChartClasses = ['absolute top-0 left-0 bg-darkSpecial w-[100%] md:min-w-[20rem] md:w-[30%] h-[100vh] flex flex-col justify-start items-start border-r-[1px] border-gray-500 z-100', newChatUI ? 'NewVVisible' : 'NewVInvisible'];
@@ -35,13 +37,25 @@ function NewChatView(props) {
     if(usersLoadingState === 'loading') {
         list = <div className='text-center'><Spinner/></div>
     } else if(usersLoadingState === 'succeeded') {
-        list = usersArray.map(usr => (
-            <ChatItem profile={usr.profileUrl} username={usr.username} status={usr.status} _id={usr._id} key={usr._id}/>
+        if(filteredValue) {
+            let filteredUsers = usersArray.filter(usr => usr.username.includes(filteredValue));
+            list = filteredUsers.map(filtered => (
+                <ChatItem profile={filtered.profileUrl} username={filtered.username} status={filtered.status} _id={filtered._id} key={filtered._id}/>
             ))
+        } else {
+            list = usersArray.map(usr => (
+                <ChatItem profile={usr.profileUrl} username={usr.username} status={usr.status} _id={usr._id} key={usr._id}/>
+                ))
+        }
+        
     } else if(usersLoadingState === 'failed') {
         list = <p className='text-center text-mainTextColor'>Oops, Something went wrong...</p>
     } else if(!usersArray.length) {
         list = <p className='text-center text-mainTextColor'>You're the only user the App has</p>
+    }
+
+    const filterChatsHandler = (input) => {
+        setFilteredValue(input);
     }
 
     return (
@@ -50,7 +64,7 @@ function NewChatView(props) {
                 <ArrowLeftIcon className='w-[1.7rem]' onClick={() => dispatch(SETNEWCHATUIVISIBILITY(false))}/>
                 <h1>New Chat</h1>
             </div>
-            <SearchBar filter={false} placeHolder="Search contact"/>
+            <SearchBar filter={false} placeHolder="Search contact" filterValue={filterChatsHandler}/>
             <div className='w-[100%] overflow-y-scroll newChat'>
                 {list}
             </div>

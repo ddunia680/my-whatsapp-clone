@@ -37,7 +37,7 @@ function WaveForm(props) {
         waveSurfer.load(props.audio)
         waveSurfer.on('ready', () => {
             waveSurferRef.current = waveSurfer;
-            console.log(Math.floor(waveSurfer.getDuration()).toString().length);
+            // console.log(Math.floor(waveSurfer.getDuration()).toString().length);
             setFullTime( Math.floor(waveSurfer.getDuration()) < 60 ? Math.floor(waveSurfer.getDuration()).toString().length > 1 ? '0:'+ Math.floor(waveSurfer.getDuration()) : '0:0'+ Math.floor(waveSurfer.getDuration()) : Math.floor(waveSurfer.getDuration()) / 60 +':'+Math.floor(waveSurfer.getDuration()) % 60);
         });
 

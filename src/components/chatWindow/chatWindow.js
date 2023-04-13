@@ -13,6 +13,7 @@ function ChatWindow(props) {
     const interlocutor = useSelector(state => state.users.interlocutor);
     const messagesArray = useSelector(state => state.messages.messagesArray);
     const loadingState = useSelector(state => state.messages.messagesLoadingState);
+    const messageToView = useSelector(state => state.messages.toshowIntoView);
     const chatWindowUI = useRef();
     const bottomDiv = useRef();
 
@@ -46,8 +47,11 @@ function ChatWindow(props) {
     }
 
     useEffect(() => {
-        bottomDiv.current.scrollIntoView({behavior: 'smooth' })
-    }, [chatMessages]);
+        if(!messageToView) {
+            bottomDiv.current.scrollIntoView({behavior: 'smooth' })
+        }
+        
+    }, [chatMessages, messageToView]);
 
     return (
         <div ref={chatWindowUI} className='relative w-[100%] px-3 mt-[3.5rem] md:mt-0 mb-[3.5rem] md:mb-0 h-[100%] md:h-[85%] bg-wallpaper overflow-y-scroll chatWindow'>

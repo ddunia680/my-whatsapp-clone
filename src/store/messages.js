@@ -115,6 +115,7 @@ const messagesSlice = createSlice({
         chats: [],
         currentChat: null,
         callReceptionData: {},
+        toshowIntoView: '',
         error: ''
     },
     reducers: {
@@ -152,6 +153,9 @@ const messagesSlice = createSlice({
         },
         SETCALLRECEPTDATA: (state, action) => {
             state.callReceptionData = action.payload;
+        },
+        SETMESSAGEINTOVIEW: (state, action) => {
+            state.toshowIntoView = action.payload;
         }
     },
     extraReducers(builder) {
@@ -218,6 +222,7 @@ export const {
     ADDLIVEMESSAGE, 
     SETTYPING, 
     SETLASTMESSAGELIVE,
-    SETCALLRECEPTDATA
+    SETCALLRECEPTDATA,
+    SETMESSAGEINTOVIEW
  } = messagesSlice.actions;
 export default messagesSlice.reducer;

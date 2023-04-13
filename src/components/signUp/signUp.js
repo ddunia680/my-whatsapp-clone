@@ -151,8 +151,8 @@ function SignUp(props) {
             {/* profile picture */}
             { !profile ? 
             <UserCircleIcon className=' w-[7rem] md:w-[10rem] text-darkSpecial hover:text-primary duration-300 hover:duration-300' title='Click to upload profile pic' onClick={() => profileInput.current.click()}/> : 
-            <div className='w-[7rem] h-[7rem] md:w-[9rem] md:h-[9rem] bg-slate-300 rounded-full overflow-hidden'>
-                <img src={URL.createObjectURL(profile)} alt='profile' className='w-[100%] h-[100%]'/>
+            <div className='w-[7rem] h-[7rem] md:w-[9rem] md:h-[9rem] bg-slate-700 rounded-full overflow-hidden'>
+                <img src={URL.createObjectURL(profile)} alt='profile' className='w-[100%] h-[100%] object-contain'/>
                 <XCircleIcon className='w-[2rem] absolute top-[13rem] left-[15rem] text-red-300' title='reject picture' onClick={() => setProfile(null)} />
             </div>
             }

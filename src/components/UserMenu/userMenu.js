@@ -26,7 +26,7 @@ function UserMenu(props) {
 
             <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={profileChangeHandler}>Profile</div>
 
-            <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>New Group</div>
+            {/* <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>New Group</div>
 
             <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>Catalog</div>
 
@@ -34,7 +34,7 @@ function UserMenu(props) {
 
             <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>Labels</div>
 
-            <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>Settings</div>
+            <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={() => props.menuVisibility(false)}>Settings</div> */}
 
             <div className='w-[100%] h-[2rem] text-[15px] pl-3 py-5 flex justify-start items-center cursor-pointer hover:bg-primary' onClick={logoutHandler}>Log out</div>
         </div>

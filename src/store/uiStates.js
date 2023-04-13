@@ -12,7 +12,10 @@ const uiStates = createSlice({
         welcomeView: true,
         signInUI: true,
         profileEditView: false,
-        myVideoStream: null
+        myVideoStream: null,
+        forgotPassView: false,
+        newPasswordView: false,
+        tempUserId: ''
     },
     reducers: {
         SETRECEIVINGCALL: (state, action) => {
@@ -44,6 +47,13 @@ const uiStates = createSlice({
         },
         SETMYSTREAM: (state, action) => {
             state.myVideoStream = action.payload;
+        },
+        SETFORGOTVIEW: (state, action) => {
+            state.forgotPassView = action.payload;
+        },
+        SETNEWPASSWORD: (state, action) => {
+            state.tempUserId = action.payload.userId;
+            state.newPasswordView = action.payload.newPass; 
         }
     }
 });
@@ -58,6 +68,8 @@ export const {
     SHOWPROFILEEDITVIEW,
     SETSTARTEDCALL,
     SETCALLWITHVIDEO,
-    SETMYSTREAM
+    SETMYSTREAM,
+    SETFORGOTVIEW,
+    SETNEWPASSWORD
 } = uiStates.actions;
 export default uiStates.reducer;

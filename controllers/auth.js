@@ -4,6 +4,9 @@ const storage = require('../firebase.config');
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const sqMail = require('@sendgrid/mail');
+sqMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.signUp = (req, res, next) => {
     const errors = validationResult(req);
@@ -171,4 +174,106 @@ User.findById(userId)
         message: 'Oops..., Something went wrong server side'
     })
 })
+}
+
+exports.forgotPassword = (req, res, next) => {
+    const email = req.body.email;
+
+    const errors = validationResult(req);
+    console.log(errors);
+    if(!errors.isEmpty()) {
+        return res.status(422).json({
+            message: errors.array()[0].msg
+        })
+    }
+    
+    let randomCode = [ 
+        Math.floor(Math.random()* 10),
+        Math.floor(Math.random()* 10),
+        Math.floor(Math.random()* 10),
+        Math.floor(Math.random()* 10) 
+    ]
+
+    User.findOne({email: email})
+    .then(user => {
+            const emailToSend = {
+            to: email,
+            from: 'ddunia680@gmail.com',
+            subject: 'Password Reseting',
+            html: `
+                <h2>Hello from whatsapp web clone</h2>
+                <h4> your password reset code is <b>${randomCode.join(' ')}</b></h4>
+                </br>
+                </br>
+                <p>whatsapp web clone &copy; 2023, all rights reserved.</p>
+
+            `}
+
+        sqMail.send(emailToSend)
+        .then(success => {
+            console.log('email has been sent');
+            res.status(200).json({
+                userId: user._id,
+                code: randomCode.join('')
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                message: 'something went wrong server-side'
+            })
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'something went wrong server-side'
+        })
+    })
+}
+
+exports.updatePassword = (req, res, next) => {
+    const errors = validationResult(req);
+    console.log(errors);
+    if(!errors.isEmpty()) {
+        return res.status(422).json({
+            message: errors.array()[0].msg
+        })
+    }
+
+    const userId = req.body.userId;
+    const password = req.body.password;
+    const confirmPass = req.body.confirmPass;
+
+    if(password !== confirmPass) {
+        return res.status(422).json({
+            message: "passwords don't match"
+        })
+    }
+
+    User.findById(userId)
+    .then(user => {
+        if(!user) {
+            return res.status(422).json({
+                message: "user not found!"
+            })
+        }
+
+        bcrypt.hash(password, 12)
+        .then(hashedPass => {
+            user.password = hashedPass;
+
+            return user.save();
+        })
+        .then(response => {
+            console.log('password updated');
+            res.status(200).json({
+                message: 'user updated successfully'
+            })
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'something went wrong server-side'
+        })
+    })
 }

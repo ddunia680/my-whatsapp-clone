@@ -31,6 +31,15 @@ router.post('/login',[
     body('password').trim().isLength({min: 5}).withMessage('wrong password')
 ], authControllers.Login);
 
+router.post('/forgotPassword', [
+    body('email').trim().isEmail().withMessage('invalid email address')
+], authControllers.forgotPassword);
+
+router.post('/updatePassword', [
+    body('password').trim().isLength({min: 5}).withMessage('wrong password'),
+    body('confirmPass').trim().isLength({min: 5}).withMessage('wrong confirm password')
+], authControllers.updatePassword);
+
 router.get('/moreLoginInfo/:userId', authControllers.moreUserInfo);
 
 module.exports = router;

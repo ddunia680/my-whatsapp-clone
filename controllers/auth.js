@@ -198,7 +198,7 @@ exports.forgotPassword = (req, res, next) => {
     .then(user => {
             const emailToSend = {
             to: email,
-            from: 'ddunia680@gmail.com',
+            from: 'duniadunia372@gmail.com',
             subject: 'Password Reseting',
             html: `
                 <h2>Hello from whatsapp web clone</h2>

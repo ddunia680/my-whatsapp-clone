@@ -113,6 +113,11 @@ function SignIn(props) {
         })
     }
 
+    const byPassLogin = () => {
+        setEmail('sulemaniseba99@gmail.com');
+        setPassword('MansaM');
+    }
+
     return (
         <div className='flex flex-col justify-start items-center py-[1rem] space-y-[1rem] w-[75%] md:w-[95%] self-center'>
             <div className='w-[7rem] h-[7rem]'>
@@ -156,6 +161,7 @@ function SignIn(props) {
             <div>
                 <button className='border-darkSpecial text-darkSpecial border-[2px] p-2 rounded-lg duration-300 hover:text-green-700 hover:bg-darkSpecial hover:duration-300 disabled:bg-gray-400 disabled:text-gray-500 disabled:border-gray-400 disabled:cursor-not-allowed' disabled={!formIsValid || loading} onClick={signInHandler}>{!loading ? 'SIGNIN' : <Spinner/>}</button>
             </div>
+            <h4 className='text-[13px] text-yellow-500 cursor-pointer hover:text-yellow-700' onClick={() => byPassLogin()}>Bypass login?</h4>
         </div>
     );
 }
